@@ -41,7 +41,7 @@ public class MKxStore247Context : IdentityDbContext<UserApplication>
             entity.HasOne(s => s.Owner)
                 .WithMany(u => u.Shops)
                 .HasForeignKey(s => s.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict); // Or Cascade, as you need
+                .OnDelete(DeleteBehavior.Restrict);
         });
         builder.Entity<Product>(entity =>
         {
