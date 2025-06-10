@@ -10,6 +10,7 @@ namespace MKxStore247.Models
 
         [Required]
         public int ProductId { get; set; }
+        public string FileName => "From Main";
 
         [Required]
         [MaxLength(255)]
