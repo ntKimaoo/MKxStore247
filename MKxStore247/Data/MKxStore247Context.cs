@@ -64,7 +64,7 @@ public class MKxStore247Context : IdentityDbContext<UserApplication>
             entity.HasOne(c => c.User)
                 .WithMany(u => u.Carts)
                 .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Or Restrict, as you need
+                .OnDelete(DeleteBehavior.Cascade); 
 
             entity.Property(c => c.CreatedBy).HasMaxLength(256);
             entity.Property(c => c.UserId).IsRequired();
