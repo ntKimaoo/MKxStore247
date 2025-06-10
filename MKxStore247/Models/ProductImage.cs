@@ -10,7 +10,7 @@ namespace MKxStore247.Models
 
         [Required]
         public int ProductId { get; set; }
-
+        public string FileName => "From Kien branch";
         [Required]
         [MaxLength(255)]
         public string ImageUrl { get; set; }
