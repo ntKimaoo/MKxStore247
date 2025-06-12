@@ -41,6 +41,8 @@ public class UserApplication : IdentityUser
     public virtual ICollection<Order> Orders { get; set; }
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
     public virtual ICollection<UserCoupon> UserCoupons { get; set; } = new List<UserCoupon>();
+    public virtual ICollection<ProductWishlist> Wishlists { get; set; } = new List<ProductWishlist>();
+
 }
 
 
