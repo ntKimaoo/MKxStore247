@@ -8,11 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("MKxStore247ContextConnection") ?? throw new InvalidOperationException("Connection string 'MKxStore247ContextConnection' not found.");
 
 builder.Services.AddDbContext<MKxStore247Context>(options => options.UseSqlServer(connectionString));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<MKxStore247Context>()
-    .AddDefaultTokenProviders();
 
-builder.Services.AddDefaultIdentity<UserApplication>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MKxStore247Context>();
+
+builder.Services.AddDefaultIdentity<UserApplication>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+}).AddEntityFrameworkStores<MKxStore247Context>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -28,6 +33,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+app.MapRazorPages();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -10,7 +10,7 @@ namespace MKxStore247.Models;
 // Add profile data for application users by adding properties to the UserApplication class
 public class UserApplication : IdentityUser
 {
-    public string FullName { get; set; }
+    public string? FullName { get; set; }
 
     public string? AvatarUrl { get; set; } 
 
@@ -21,6 +21,8 @@ public class UserApplication : IdentityUser
     public string? Address { get; set; }
 
     public DateTime? LastLoginAt { get; set; }
+
+    public bool IsFirstLogin { get; set; } = true;
 
     public bool IsActive { get; set; } = true;
 
