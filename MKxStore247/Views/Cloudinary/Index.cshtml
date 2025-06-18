@@ -1,0 +1,36 @@
+﻿@{
+	ViewBag.Title = "Cloudinary CRUD ảnh";
+}
+
+<h1>Cloudinary CRUD ảnh</h1>
+
+<h2>Tải ảnh lên</h2>
+
+<form asp-action="Create" enctype="multipart/form-data">
+	<input type="file" name="file" /><br /><br />
+	<input type="submit" value="Tải lên" />
+</form>
+
+@if (ViewBag.PublicId == null && ViewBag.Url == null)
+{
+	<p>Chưa có ảnh</p>
+}
+else
+{
+	<h2>Ảnh vừa tải lên</h2>
+	<img src="@ViewBag.Url" alt="Uploaded Image" /><br /><br />
+
+	<form asp-action="Update">
+		<input type="hidden" name="publicId" value="@ViewBag.PublicId" /><br /><br />
+		<input type="file" name="newFile" /><br /><br />
+		<input type="submit" value="Cập nhật ảnh" /><br /><br />
+	</form>
+
+	<form asp-action="Delete">
+		<input type="hidden" name="publicId" value="@ViewBag.PublicId" /><br /><br />
+		<input type="submit" value="Xóa ảnh" /><br /><br />
+	</form>
+
+	<p>PublicId: @ViewBag.PublicId</p>
+	<p>URL ảnh: <a href="@ViewBag.Url" target="_blank">@ViewBag.Url</a></p>
+}
