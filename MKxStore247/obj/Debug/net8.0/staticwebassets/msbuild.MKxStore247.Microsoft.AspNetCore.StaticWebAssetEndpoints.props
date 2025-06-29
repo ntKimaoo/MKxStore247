@@ -1,16 +1,28 @@
 ﻿<Project>
   <ItemGroup>
-    <StaticWebAssetEndpoint Include="_content/MKxStore247/css/site.c2tiyv64ts.css">
+    <StaticWebAssetEndpoint Include="_content/MKxStore247/css/HomeStyle.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\HomeStyle.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-xs3R/nI55HPJ5amaVjwwIE\u002BBScUYF9amymGFQ1\u002BamQM="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"6081"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022xs3R/nI55HPJ5amaVjwwIE\u002BBScUYF9amymGFQ1\u002BamQM=\u0022"},{"Name":"Last-Modified","Value":"Thu, 19 Jun 2025 03:49:51 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/MKxStore247/css/HomeStyle.mttt6optmd.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\HomeStyle.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"mttt6optmd"},{"Name":"integrity","Value":"sha256-xs3R/nI55HPJ5amaVjwwIE\u002BBScUYF9amymGFQ1\u002BamQM="},{"Name":"label","Value":"_content/MKxStore247/css/HomeStyle.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"6081"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022xs3R/nI55HPJ5amaVjwwIE\u002BBScUYF9amymGFQ1\u002BamQM=\u0022"},{"Name":"Last-Modified","Value":"Thu, 19 Jun 2025 03:49:51 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/MKxStore247/css/site.6knw7s4cq4.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"c2tiyv64ts"},{"Name":"integrity","Value":"sha256-pAGv4ietcJNk/EwsQZ5BN9\u002BK4MuNYS2a9wl4Jw\u002Bq9D0="},{"Name":"label","Value":"_content/MKxStore247/css/site.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"362"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022pAGv4ietcJNk/EwsQZ5BN9\u002BK4MuNYS2a9wl4Jw\u002Bq9D0=\u0022"},{"Name":"Last-Modified","Value":"Mon, 09 Jun 2025 14:52:54 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"6knw7s4cq4"},{"Name":"integrity","Value":"sha256-RtZliQLmpVZylGVUBtL9wwlXbe\u002Bcw/lb3/K3xkLlQv0="},{"Name":"label","Value":"_content/MKxStore247/css/site.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"325"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022RtZliQLmpVZylGVUBtL9wwlXbe\u002Bcw/lb3/K3xkLlQv0=\u0022"},{"Name":"Last-Modified","Value":"Thu, 19 Jun 2025 02:27:38 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/MKxStore247/css/site.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-pAGv4ietcJNk/EwsQZ5BN9\u002BK4MuNYS2a9wl4Jw\u002Bq9D0="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"362"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022pAGv4ietcJNk/EwsQZ5BN9\u002BK4MuNYS2a9wl4Jw\u002Bq9D0=\u0022"},{"Name":"Last-Modified","Value":"Mon, 09 Jun 2025 14:52:54 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-RtZliQLmpVZylGVUBtL9wwlXbe\u002Bcw/lb3/K3xkLlQv0="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"325"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022RtZliQLmpVZylGVUBtL9wwlXbe\u002Bcw/lb3/K3xkLlQv0=\u0022"},{"Name":"Last-Modified","Value":"Thu, 19 Jun 2025 02:27:38 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/MKxStore247/favicon.61n19gt1b8.ico">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\favicon.ico'))</AssetFile>

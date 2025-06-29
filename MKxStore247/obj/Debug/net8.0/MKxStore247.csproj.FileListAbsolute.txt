@@ -270,3 +270,4 @@ E:\c#project\MKxStore247\MKxStore247\bin\Debug\net8.0\Microsoft.Extensions.FileP
 E:\c#project\MKxStore247\MKxStore247\obj\Debug\net8.0\MKxStore247.MvcApplicationPartsAssemblyInfo.cs
 E:\c#project\MKxStore247\MKxStore247\obj\Debug\net8.0\MKxStore247.sourcelink.json
 E:\c#project\MKxStore247\MKxStore247\bin\Debug\net8.0\CloudinaryDotNet.dll
+E:\c#project\MKxStore247\MKxStore247\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -20,7 +20,7 @@ public class MKxStore247Context : IdentityDbContext<UserApplication>
         base.OnModelCreating(builder);
         builder.Entity<UserApplication>(entity =>
         {
-            entity.Property(u => u.FullName).HasMaxLength(200).IsRequired();
+            entity.Property(u => u.FullName).HasMaxLength(200);
             entity.Property(u => u.CreatedBy).HasMaxLength(256);
             entity.Property(u => u.Address).HasMaxLength(500);
         });
