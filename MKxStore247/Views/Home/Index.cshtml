@@ -1,185 +1,204 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@{
 	ViewData["Title"] = "Market 247";
 }
-
-<link href="css/HomeStyle.css" rel="stylesheet">
+@inject SignInManager<UserApplication> SignInManager
+@inject UserManager<UserApplication> UserManager
+<link href="css/HomeStyle.css" rel="stylesheet"/>
 <style>
-	.body-content{
+	.body-content {
 		max-width: 1080px; /* hoặc 768px, 600px tùy ý */
 		margin: 0 auto; /* canh giữa */
 	}
-	.custom-section{
+
+	.custom-section {
 		border-radius: 16px;
 	}
 </style>
-<header>
-
-</header>
-<section class="body-content container">
-	<!-- Navigation Categories -->
-	<nav class="nav-categories">
-		<div class="container">
-			<div class="d-flex flex-wrap gap-2">
-				<a href="#" class="nav-link">Xe cộ</a>
-				<a href="#" class="nav-link">Bất động sản</a>
-				<a href="#" class="nav-link">Đồ điện tử</a>
-				<a href="#" class="nav-link">Thời trang</a>
-				<a href="#" class="nav-link">Đồ gia dụng</a>
-				<a href="#" class="nav-link">Việc làm</a>
-				<a href="#" class="nav-link">Dịch vụ</a>
-				<a href="#" class="nav-link">Thú cưng</a>
+@{
+	var user = await UserManager.GetUserAsync(User);
+	string roles = "";
+	if (user != null)
+	{
+		var role = await UserManager.GetRolesAsync(user);
+		roles = string.Join(", ", role).Trim();
+	}
+}
+@if (roles == "Admin")
+{
+	
+}
+else
+{
+	<header>
+	</header>
+	<section class="body-content container">
+		<!-- Navigation Categories -->
+		<nav class="nav-categories">
+			<div class="container">
+				<div class="d-flex flex-wrap gap-2">
+					<a href="#" class="nav-link">Xe cộ</a>
+					<a href="#" class="nav-link">Bất động sản</a>
+					<a href="#" class="nav-link">Đồ điện tử</a>
+					<a href="#" class="nav-link">Thời trang</a>
+					<a href="#" class="nav-link">Đồ gia dụng</a>
+					<a href="#" class="nav-link">Việc làm</a>
+					<a href="#" class="nav-link">Dịch vụ</a>
+					<a href="#" class="nav-link">Thú cưng</a>
+				</div>
 			</div>
-		</div>
-	</nav>
+		</nav>
 
-	<!-- Hero Section -->
-	<section class="hero-section">
-		<div class="container">
-			<div class="row align-items-center">
-				<div class="col-lg-8">
-					<div class="hero-content">
-						<h2>Mua bán nhanh, <span style="color: #FAA03F">dễ dàng </span></h2>
-						<p class="">
-							Kết nối người mua và người bán trên toàn quốc. Đăng tin miễn phí, giao dịch an toàn.
-						</p>
-						<div class="hero-stats">
-							<div class="stat-item">
-								<span class="stat-number">1M+</span>
-								<span>Tin đăng</span>
-							</div>
-							<div class="stat-item">
-								<span class="stat-number">500K+</span>
-								<span>Người dùng</span>
-							</div>
-							<div class="stat-item">
-								<span class="stat-number">50K+</span>
-								<span>Giao dịch/tháng</span>
+		<!-- Hero Section -->
+		<section class="hero-section">
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-lg-8">
+						<div class="hero-content">
+							<h2>Mua bán nhanh, <span style="color: #FAA03F">dễ dàng </span></h2>
+							<p class="">
+								Kết nối người mua và người bán trên toàn quốc. Đăng tin miễn phí, giao dịch an toàn.
+							</p>
+							<div class="hero-stats">
+								<div class="stat-item">
+									<span class="stat-number">1M+</span>
+									<span>Tin đăng</span>
+								</div>
+								<div class="stat-item">
+									<span class="stat-number">500K+</span>
+									<span>Người dùng</span>
+								</div>
+								<div class="stat-item">
+									<span class="stat-number">50K+</span>
+									<span>Giao dịch/tháng</span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</section>
+
+		<!-- Categories Section -->
+		<section class="py-5 bg-white shadow custom-section mb-3">
+			<div class="container">
+				<h2 class="section-title text-center">Danh mục nổi bật</h2>
+				<div class="category-grid">
+					<a href="#" class="category-item">
+						<div class="category-icon">
+							<i class="fas fa-car"></i>
+						</div>
+						<div>Xe cộ</div>
+					</a>
+					<a href="#" class="category-item">
+						<div class="category-icon">
+							<i class="fas fa-home"></i>
+						</div>
+						<div>Bất động sản</div>
+					</a>
+					<a href="#" class="category-item">
+						<div class="category-icon">
+							<i class="fas fa-mobile-alt"></i>
+						</div>
+						<div>Điện thoại</div>
+					</a>
+					<a href="#" class="category-item">
+						<div class="category-icon">
+							<i class="fas fa-laptop"></i>
+						</div>
+						<div>Máy tính</div>
+					</a>
+					<a href="#" class="category-item">
+						<div class="category-icon">
+							<i class="fas fa-tshirt"></i>
+						</div>
+						<div>Thời trang</div>
+					</a>
+					<a href="#" class="category-item">
+						<div class="category-icon">
+							<i class="fas fa-couch"></i>
+						</div>
+						<div>Nội thất</div>
+					</a>
+					<a href="#" class="category-item">
+						<div class="category-icon">
+							<i class="fas fa-briefcase"></i>
+						</div>
+						<div>Việc làm</div>
+					</a>
+					<a href="#" class="category-item">
+						<div class="category-icon">
+							<i class="fas fa-paw"></i>
+						</div>
+						<div>Thú cưng</div>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- Featured Products -->
+		<section class="custom-section py-5 bg-white shadow">
+			<div class="container">
+				<h2 class="section-title">Sản phẩm nổi bật</h2>
+				<div class="row g-4">
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<div class="product-card">
+							<img src="https://via.placeholder.com/300x200?text=iPhone+15" alt="iPhone 15"
+								 class="product-image">
+							<div class="product-info">
+								<div class="product-price">25.000.000 đ</div>
+								<div class="product-title">iPhone 15 Pro Max 256GB</div>
+								<div class="product-location">
+									<i class="fas fa-map-marker-alt me-1"></i>Hà Nội
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<div class="product-card">
+							<img src="https://via.placeholder.com/300x200?text=Honda+Vision" alt="Honda Vision"
+								 class="product-image">
+							<div class="product-info">
+								<div class="product-price">28.000.000 đ</div>
+								<div class="product-title">Honda Vision 2023</div>
+								<div class="product-location">
+									<i class="fas fa-map-marker-alt me-1"></i>TP. HCM
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<div class="product-card">
+							<img src="https://via.placeholder.com/300x200?text=MacBook" alt="MacBook"
+								 class="product-image">
+							<div class="product-info">
+								<div class="product-price">35.000.000 đ</div>
+								<div class="product-title">MacBook Pro M3 16 inch</div>
+								<div class="product-location">
+									<i class="fas fa-map-marker-alt me-1"></i>Đà Nẵng
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<div class="product-card">
+							<img src="https://via.placeholder.com/300x200?text=Căn+hộ" alt="Căn hộ"
+								 class="product-image">
+							<div class="product-info">
+								<div class="product-price">2.5 tỷ</div>
+								<div class="product-title">Căn hộ 2PN, full nội thất</div>
+								<div class="product-location">
+									<i class="fas fa-map-marker-alt me-1"></i>Hà Nội
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 	</section>
+}
 
-	<!-- Categories Section -->
-	<section class="py-5 bg-white shadow custom-section mb-3">
-		<div class="container">
-			<h2 class="section-title text-center">Danh mục nổi bật</h2>
-			<div class="category-grid">
-				<a href="#" class="category-item">
-					<div class="category-icon">
-						<i class="fas fa-car"></i>
-					</div>
-					<div>Xe cộ</div>
-				</a>
-				<a href="#" class="category-item">
-					<div class="category-icon">
-						<i class="fas fa-home"></i>
-					</div>
-					<div>Bất động sản</div>
-				</a>
-				<a href="#" class="category-item">
-					<div class="category-icon">
-						<i class="fas fa-mobile-alt"></i>
-					</div>
-					<div>Điện thoại</div>
-				</a>
-				<a href="#" class="category-item">
-					<div class="category-icon">
-						<i class="fas fa-laptop"></i>
-					</div>
-					<div>Máy tính</div>
-				</a>
-				<a href="#" class="category-item">
-					<div class="category-icon">
-						<i class="fas fa-tshirt"></i>
-					</div>
-					<div>Thời trang</div>
-				</a>
-				<a href="#" class="category-item">
-					<div class="category-icon">
-						<i class="fas fa-couch"></i>
-					</div>
-					<div>Nội thất</div>
-				</a>
-				<a href="#" class="category-item">
-					<div class="category-icon">
-						<i class="fas fa-briefcase"></i>
-					</div>
-					<div>Việc làm</div>
-				</a>
-				<a href="#" class="category-item">
-					<div class="category-icon">
-						<i class="fas fa-paw"></i>
-					</div>
-					<div>Thú cưng</div>
-				</a>
-			</div>
-		</div>
-	</section>
-
-	<!-- Featured Products -->
-	<section class="custom-section py-5 bg-white shadow">
-		<div class="container">
-			<h2 class="section-title">Sản phẩm nổi bật</h2>
-			<div class="row g-4">
-				<div class="col-lg-3 col-md-4 col-sm-6">
-					<div class="product-card">
-						<img src="https://via.placeholder.com/300x200?text=iPhone+15" alt="iPhone 15"
-							 class="product-image">
-						<div class="product-info">
-							<div class="product-price">25.000.000 đ</div>
-							<div class="product-title">iPhone 15 Pro Max 256GB</div>
-							<div class="product-location">
-								<i class="fas fa-map-marker-alt me-1"></i>Hà Nội
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-4 col-sm-6">
-					<div class="product-card">
-						<img src="https://via.placeholder.com/300x200?text=Honda+Vision" alt="Honda Vision"
-							 class="product-image">
-						<div class="product-info">
-							<div class="product-price">28.000.000 đ</div>
-							<div class="product-title">Honda Vision 2023</div>
-							<div class="product-location">
-								<i class="fas fa-map-marker-alt me-1"></i>TP. HCM
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-4 col-sm-6">
-					<div class="product-card">
-						<img src="https://via.placeholder.com/300x200?text=MacBook" alt="MacBook"
-							 class="product-image">
-						<div class="product-info">
-							<div class="product-price">35.000.000 đ</div>
-							<div class="product-title">MacBook Pro M3 16 inch</div>
-							<div class="product-location">
-								<i class="fas fa-map-marker-alt me-1"></i>Đà Nẵng
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-4 col-sm-6">
-					<div class="product-card">
-						<img src="https://via.placeholder.com/300x200?text=Căn+hộ" alt="Căn hộ"
-							 class="product-image">
-						<div class="product-info">
-							<div class="product-price">2.5 tỷ</div>
-							<div class="product-title">Căn hộ 2PN, full nội thất</div>
-							<div class="product-location">
-								<i class="fas fa-map-marker-alt me-1"></i>Hà Nội
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-</section>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

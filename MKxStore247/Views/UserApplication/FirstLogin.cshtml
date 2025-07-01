@@ -1,0 +1,182 @@
+﻿@{
+	Layout = null;
+}
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Thiết Lập Thông Tin Cá Nhân</title>
+	<link rel="stylesheet" href="css/FirstLogin.css" />
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="header_f1">
+			<h1>Hoàn Tất Thông Tin</h1>
+			<p>Vui lòng cung cấp thông tin cá nhân để hoàn tất quá trình đăng ký</p>
+		</div>
+
+		<form id="setupForm" asp-controller="UserApplication" asp-action="RegisterComplete" enctype="multipart/form-data">
+			<!-- Avatar Section -->
+			<div class="avatar-section">
+				<div class="avatar-container">
+					<div class="avatar-placeholder" id="avatarPlaceholder" onclick="document.getElementById('avatarInput').click()">
+						Chọn ảnh đại diện
+					</div>
+					<img class="avatar-preview hidden" id="avatarPreview" onclick="document.getElementById('avatarInput').click()">
+				</div>
+				<input type="file" id="avatarInput" class="hidden" accept="image/*">
+				<input type="hidden" id="avatarUrl" name="AvatarUrl">
+			</div>
+
+			<!-- Full Name -->
+			<div class="form-group">
+				<label for="fullname">Họ và tên <span class="required">*</span></label>
+				<input type="text" id="fullname" name="FullName" class="form-control" required>
+			</div>
+
+			<!-- Gender -->
+			<div class="form-group">
+				<label>Giới tính <span class="required">*</span></label>
+				<div class="gender-options">
+					<div class="gender-option">
+						<input type="radio" id="male" name="Gender" value="male" required>
+						<label for="male">Nam</label>
+					</div>
+					<div class="gender-option">
+						<input type="radio" id="female" name="Gender" value="female" required>
+						<label for="female">Nữ</label>
+					</div>
+					<div class="gender-option">
+						<input type="radio" id="other" name="Gender" value="other" required>
+						<label for="other">Khác</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- Date of Birth -->
+			<div class="form-group">
+				<label for="dob">Ngày sinh</label>
+				<input type="date" id="dob" name="DateOfBirth" class="form-control">
+			</div>
+
+			<!-- Address -->
+			<div class="form-group">
+				<label for="address">Địa chỉ</label>
+				<input type="text" id="address" name="Address" class="form-control" placeholder="Nhập địa chỉ của bạn">
+			</div>
+
+			<!-- Phone Number -->
+			<div class="form-group">
+				<label for="phone">Số điện thoại <span class="required">*</span></label>
+				<input type="tel" id="phone" name="PhoneNumber" class="form-control" placeholder="0xxx xxx xxx" required>
+			</div>
+
+			<button type="submit" class="btn-submit">Hoàn Tất Thiết Lập</button>
+			<button id="Logout" class="btn-danger">Đăng xuất</button>
+		</form>
+
+		<div id="successMessage" class="success-message hidden">
+			<strong>Thành công!</strong> Thông tin của bạn đã được cập nhật.
+		</div>
+	</div>
+
+	<script>
+		// Avatar handling
+		const avatarInput = document.getElementById('avatarInput');
+		const avatarPreview = document.getElementById('avatarPreview');
+		const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+
+		avatarInput.addEventListener('change', function(e) {
+			const file = e.target.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					avatarPreview.src = e.target.result;
+					avatarPreview.classList.remove('hidden');
+					avatarPlaceholder.classList.add('hidden');
+				}
+				reader.readAsDataURL(file);
+			}
+		});
+
+		// Form validation and submission
+		const form = document.getElementById('setupForm');
+		const successMessage = document.getElementById('successMessage');
+
+		form.addEventListener('submit', function(e) {
+			// Get form data
+			const formData = new FormData(form);
+			const userData = {};
+
+			// Process form fields
+			for (let [key, value] of formData.entries()) {
+				userData[key] = value;
+			}
+
+			// Add avatar if selected
+			if (avatarInput.files[0]) {
+				userData.AvatarUrl = avatarInput.files[0].name;
+			}
+
+			// Validate required fields
+			if (!userData.FullName || !userData.Gender || !userData.PhoneNumber) {
+				alert('Vui lòng điền đầy đủ các trường bắt buộc (*)');
+				return;
+			}
+
+			// Validate phone number format
+			const phoneRegex = /^[0-9]{10,11}$/;
+			if (!phoneRegex.test(userData.PhoneNumber.replace(/\s/g, ''))) {
+				alert('Số điện thoại không hợp lệ. Vui lòng nhập 10-11 chữ số.');
+				return;
+			}
+
+			// Simulate API call
+			setTimeout(() => {
+				form.classList.add('hidden');
+				successMessage.classList.remove('hidden');
+
+				// Redirect after 2 seconds (in real app)
+				setTimeout(() => {
+					alert('Sẽ chuyển hướng đến trang chủ...');
+					window.location.href = '/home';
+				}, 2000);
+			}, 1000);
+		});
+
+		// Phone number formatting
+		const phoneInput = document.getElementById('phone');
+		phoneInput.addEventListener('input', function(e) {
+			let value = e.target.value.replace(/\D/g, '');
+			if (value.length > 0) {
+				if (value.length <= 3) {
+					value = value;
+				} else if (value.length <= 6) {
+					value = value.substring(0, 3) + ' ' + value.substring(3);
+				} else if (value.length <= 10) {
+					value = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6);
+				} else {
+					value = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6, 10);
+				}
+			}
+			e.target.value = value;
+		});
+
+		// Auto-resize on mobile
+		window.addEventListener('resize', function() {
+			if (window.innerWidth <= 600) {
+				document.body.style.padding = '10px';
+			} else {
+				document.body.style.padding = '20px';
+			}
+		});
+		document.getElementById('Logout').addEventListener('click', function (e) {
+			e.preventDefault(); // Ngăn chặn hành động mặc định (ví dụ submit form, chuyển trang)
+
+			// Thực hiện các hành động logout tại đây, ví dụ gọi API hoặc chuyển hướng
+			console.log('Đã nhấn logout');
+
+			window.location.href = 'UserApplication/Logout';
+		});
+	</script>
+</body>

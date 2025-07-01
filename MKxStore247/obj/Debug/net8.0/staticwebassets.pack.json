@@ -2,11 +2,19 @@
   "Files": [
     {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\MKxStore247.bundle.scp.css",
-      "PackagePath": "staticwebassets\\MKxStore247.epvrjmj55n.bundle.scp.css"
+      "PackagePath": "staticwebassets\\MKxStore247.1ptilff4cl.bundle.scp.css"
+    },
+    {
+      "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\FirstLogin.css",
+      "PackagePath": "staticwebassets\\css\\FirstLogin.css"
     },
     {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\HomeStyle.css",
       "PackagePath": "staticwebassets\\css\\HomeStyle.css"
+    },
+    {
+      "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\Layout.css",
+      "PackagePath": "staticwebassets\\css\\Layout.css"
     },
     {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\site.css",

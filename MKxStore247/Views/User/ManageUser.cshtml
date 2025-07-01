@@ -1,0 +1,1001 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Người Dùng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+            .sidebar .nav-link {
+                color: rgba(255,255,255,0.8);
+                transition: all 0.3s ease;
+            }
+
+                .sidebar .nav-link:hover {
+                    color: white;
+                    background: rgba(255,255,255,0.1);
+                    border-radius: 8px;
+                }
+
+                .sidebar .nav-link.active {
+                    background: rgba(255,255,255,0.2);
+                    color: white;
+                    border-radius: 8px;
+                }
+
+        .main-content {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+                transform: translateY(-2px);
+            }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        .badge {
+            font-size: 0.75em;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+            .search-box .form-control {
+                padding-left: 2.5rem;
+            }
+
+            .search-box .fa-search {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #6c757d;
+            }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+            .stats-card .card-body {
+                padding: 1.5rem;
+            }
+
+        .stats-icon {
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h4><i class="fas fa-users-cog"></i> Admin Panel</h4>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="showSection('users')">
+                                <i class="fas fa-users"></i> Quản lý User
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('roles')">
+                                <i class="fas fa-user-tag"></i> Quản lý Roles
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('permissions')">
+                                <i class="fas fa-shield-alt"></i> Phân quyền
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('statistics')">
+                                <i class="fas fa-chart-bar"></i> Thống kê
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <!-- Header -->
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Quản Lý Người Dùng</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="showAddUserModal()">
+                                <i class="fas fa-plus"></i> Thêm User
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="exportUsers()">
+                                <i class="fas fa-download"></i> Xuất Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4" id="statistics-section" style="display: none;">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1">Tổng Users</div>
+                                        <div class="h5 mb-0 font-weight-bold" id="totalUsers">156</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-users stats-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1">Users Hoạt động</div>
+                                        <div class="h5 mb-0 font-weight-bold" id="activeUsers">142</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-user-check stats-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1">Admin</div>
+                                        <div class="h5 mb-0 font-weight-bold" id="adminUsers">5</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-user-shield stats-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1">Mới hôm nay</div>
+                                        <div class="h5 mb-0 font-weight-bold" id="newToday">3</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-user-plus stats-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="users-section">
+                    <!-- Search and Filter -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm theo tên, email..." onkeyup="searchUsers()">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-select" id="roleFilter" onchange="filterByRole()">
+                                        <option value="">Tất cả vai trò</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="User">User</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-select" id="statusFilter" onchange="filterByStatus()">
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="active">Hoạt động</option>
+                                        <option value="inactive">Không hoạt động</option>
+                                        <option value="locked">Bị khóa</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Avatar</th>
+                                            <th>Tên</th>
+                                            <th>Email</th>
+                                            <th>Vai trò</th>
+                                            <th>Trạng thái</th>
+                                            <th>Ngày tạo</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+                                        <!-- Users data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Pagination -->
+                            <nav aria-label="User pagination">
+                                <ul class="pagination justify-content-center" id="pagination">
+                                    <!-- Pagination will be generated here -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roles Section -->
+                <div id="roles-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Quản lý Vai trò</h5>
+                            <button class="btn btn-primary btn-sm" onclick="showAddRoleModal()">
+                                <i class="fas fa-plus"></i> Thêm Role
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Tên Role</th>
+                                            <th>Mô tả</th>
+                                            <th>Số Users</th>
+                                            <th>Ngày tạo</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rolesTableBody">
+                                        <!-- Roles data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">Thêm User Mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="userForm">
+                        <input type="hidden" id="userId">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="firstName" class="form-label">Họ *</label>
+                                    <input type="text" class="form-control" id="firstName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="lastName" class="form-label">Tên *</label>
+                                    <input type="text" class="form-control" id="lastName" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="phoneNumber">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="userRole" class="form-label">Vai trò *</label>
+                                    <select class="form-select" id="userRole" required>
+                                        <option value="">Chọn vai trò</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="User">User</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="userStatus" class="form-label">Trạng thái</label>
+                                    <select class="form-select" id="userStatus">
+                                        <option value="active">Hoạt động</option>
+                                        <option value="inactive">Không hoạt động</option>
+                                        <option value="locked">Bị khóa</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3" id="passwordSection">
+                            <label for="password" class="form-label">Mật khẩu *</label>
+                            <input type="password" class="form-control" id="password" required>
+                            <div class="form-text">Mật khẩu phải có ít nhất 6 ký tự</div>
+                        </div>
+                        <div class="mb-3" id="confirmPasswordSection">
+                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu *</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="saveUser()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Role Modal -->
+    <div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="roleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roleModalLabel">Thêm Role Mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="roleForm">
+                        <div class="mb-3">
+                            <label for="roleName" class="form-label">Tên Role *</label>
+                            <input type="text" class="form-control" id="roleName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roleDescription" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="roleDescription" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="saveRole()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Sample data - In real app, this would come from API
+        let users = [
+            {
+                id: 1,
+                firstName: 'Nguyễn',
+                lastName: 'Văn An',
+                email: 'admin@example.com',
+                phoneNumber: '0901234567',
+                role: 'Admin',
+                status: 'active',
+                createdDate: '2024-01-15',
+                avatar: 'A'
+            },
+            {
+                id: 2,
+                firstName: 'Trần',
+                lastName: 'Thị Bình',
+                email: 'manager@example.com',
+                phoneNumber: '0912345678',
+                role: 'Manager',
+                status: 'active',
+                createdDate: '2024-02-20',
+                avatar: 'B'
+            },
+            {
+                id: 3,
+                firstName: 'Lê',
+                lastName: 'Văn Cường',
+                email: 'user1@example.com',
+                phoneNumber: '0923456789',
+                role: 'User',
+                status: 'inactive',
+                createdDate: '2024-03-10',
+                avatar: 'C'
+            },
+            {
+                id: 4,
+                firstName: 'Phạm',
+                lastName: 'Thị Dung',
+                email: 'user2@example.com',
+                phoneNumber: '0934567890',
+                role: 'User',
+                status: 'locked',
+                createdDate: '2024-03-25',
+                avatar: 'D'
+            },
+            {
+                id: 5,
+                firstName: 'Hoàng',
+                lastName: 'Văn Minh',
+                email: 'user3@example.com',
+                phoneNumber: '0945678901',
+                role: 'User',
+                status: 'active',
+                createdDate: '2024-04-05',
+                avatar: 'M'
+            }
+        ];
+
+        let roles = [
+            { name: 'Admin', description: 'Toàn quyền quản trị hệ thống', userCount: 1, createdDate: '2024-01-01' },
+            { name: 'Manager', description: 'Quản lý các chức năng chính', userCount: 1, createdDate: '2024-01-01' },
+            { name: 'User', description: 'Người dùng thông thường', userCount: 3, createdDate: '2024-01-01' }
+        ];
+
+        let currentPage = 1;
+        let itemsPerPage = 5;
+        let filteredUsers = [...users];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderUsers();
+            renderRoles();
+            updateStatistics();
+        });
+
+        // Show section
+        function showSection(sectionName) {
+            // Hide all sections
+            document.getElementById('users-section').style.display = 'none';
+            document.getElementById('roles-section').style.display = 'none';
+            document.getElementById('statistics-section').style.display = 'none';
+
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Show selected section
+            if (sectionName === 'statistics') {
+                document.getElementById('statistics-section').style.display = 'block';
+                document.getElementById('users-section').style.display = 'block';
+            } else {
+                document.getElementById(sectionName + '-section').style.display = 'block';
+            }
+
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+        }
+
+        // Render users table
+        function renderUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+
+            tbody.innerHTML = paginatedUsers.map((user, index) => `
+                <tr>
+                    <td>${startIndex + index + 1}</td>
+                    <td>
+                        <div class="user-avatar">${user.avatar}</div>
+                    </td>
+                    <td>${user.firstName} ${user.lastName}</td>
+                    <td>${user.email}</td>
+                    <td><span class="badge bg-primary">${user.role}</span></td>
+                    <td>
+                        <span class="badge ${getStatusBadgeClass(user.status)}">
+                            ${getStatusText(user.status)}
+                        </span>
+                    </td>
+                    <td>${formatDate(user.createdDate)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editUser(${user.id})" title="Chỉnh sửa">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-1" onclick="resetPassword(${user.id})" title="Đặt lại mật khẩu">
+                            <i class="fas fa-key"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning me-1" onclick="toggleUserStatus(${user.id})" title="Khóa/Mở khóa">
+                            <i class="fas fa-${user.status === 'locked' ? 'unlock' : 'lock'}"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${user.id})" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            renderPagination();
+        }
+
+        // Render roles table
+        function renderRoles() {
+            const tbody = document.getElementById('rolesTableBody');
+            tbody.innerHTML = roles.map(role => `
+                <tr>
+                    <td><strong>${role.name}</strong></td>
+                    <td>${role.description}</td>
+                    <td><span class="badge bg-info">${role.userCount}</span></td>
+                    <td>${formatDate(role.createdDate)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editRole('${role.name}')" title="Chỉnh sửa">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRole('${role.name}')" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+
+            let paginationHTML = '';
+
+            // Previous button
+            paginationHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">Trước</a>
+                </li>
+            `;
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+
+            // Next button
+            paginationHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToPage(${currentPage + 1})">Sau</a>
+                </li>
+            `;
+
+            pagination.innerHTML = paginationHTML;
+        }
+
+        // Go to page
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                renderUsers();
+            }
+        }
+
+        // Search users
+        function searchUsers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredUsers = users.filter(user =>
+                user.firstName.toLowerCase().includes(searchTerm) ||
+                user.lastName.toLowerCase().includes(searchTerm) ||
+                user.email.toLowerCase().includes(searchTerm)
+            );
+            currentPage = 1;
+            renderUsers();
+        }
+
+        // Filter by role
+        function filterByRole() {
+            const selectedRole = document.getElementById('roleFilter').value;
+            filteredUsers = selectedRole ?
+                users.filter(user => user.role === selectedRole) :
+                [...users];
+            currentPage = 1;
+            renderUsers();
+        }
+
+        // Filter by status
+        function filterByStatus() {
+            const selectedStatus = document.getElementById('statusFilter').value;
+            filteredUsers = selectedStatus ?
+                users.filter(user => user.status === selectedStatus) :
+                [...users];
+            currentPage = 1;
+            renderUsers();
+        }
+
+        // Show add user modal
+        function showAddUserModal() {
+            document.getElementById('userModalLabel').textContent = 'Thêm User Mới';
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('passwordSection').style.display = 'block';
+            document.getElementById('confirmPasswordSection').style.display = 'block';
+            document.getElementById('password').required = true;
+            document.getElementById('confirmPassword').required = true;
+            new bootstrap.Modal(document.getElementById('userModal')).show();
+        }
+
+        // Edit user
+        function editUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                document.getElementById('userModalLabel').textContent = 'Chỉnh sửa User';
+                document.getElementById('userId').value = user.id;
+                document.getElementById('firstName').value = user.firstName;
+                document.getElementById('lastName').value = user.lastName;
+                document.getElementById('email').value = user.email;
+                document.getElementById('phoneNumber').value = user.phoneNumber || '';
+                document.getElementById('userRole').value = user.role;
+                document.getElementById('userStatus').value = user.status;
+
+                // Hide password fields for editing
+                document.getElementById('passwordSection').style.display = 'none';
+                document.getElementById('confirmPasswordSection').style.display = 'none';
+                document.getElementById('password').required = false;
+                document.getElementById('confirmPassword').required = false;
+
+                new bootstrap.Modal(document.getElementById('userModal')).show();
+            }
+        }
+
+        // Save user
+        function saveUser() {
+            const userId = document.getElementById('userId').value;
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const role = document.getElementById('userRole').value;
+            const status = document.getElementById('userStatus').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validation
+            if (!firstName || !lastName || !email || !role) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                return;
+            }
+
+            if (!userId && (!password || password.length < 6)) {
+                alert('Mật khẩu phải có ít nhất 6 ký tự!');
+                return;
+            }
+
+            if (!userId && password !== confirmPassword) {
+                alert('Mật khẩu xác nhận không khớp!');
+                return;
+            }
+
+            // Check email uniqueness
+            const existingUser = users.find(u => u.email === email && u.id != userId);
+            if (existingUser) {
+                alert('Email đã tồn tại!');
+                return;
+            }
+
+            if (userId) {
+                // Update existing user
+                const userIndex = users.findIndex(u => u.id == userId);
+                if (userIndex !== -1) {
+                    users[userIndex] = {
+                        ...users[userIndex],
+                        firstName,
+                        lastName,
+                        email,
+                        phoneNumber,
+                        role,
+                        status
+                    };
+                }
+            } else {
+                // Add new user
+                const newUser = {
+                    id: Math.max(...users.map(u => u.id)) + 1,
+                    firstName,
+                    lastName,
+                    email,
+                    phoneNumber,
+                    role,
+                    status,
+                    createdDate: new Date().toISOString().split('T')[0],
+                    avatar: firstName.charAt(0).toUpperCase()
+                };
+                users.push(newUser);
+            }
+
+            // Update role counts
+            updateRoleCounts();
+
+            // Refresh displays
+            filteredUsers = [...users];
+            renderUsers();
+            renderRoles();
+            updateStatistics();
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
+
+            // Show success message
+            showAlert('success', userId ? 'Cập nhật user thành công!' : 'Thêm user thành công!');
+        }
+
+        // Delete user
+        function deleteUser(userId) {
+            if (confirm('Bạn có chắc chắn muốn xóa user này?')) {
+                const userIndex = users.findIndex(u => u.id === userId);
+                if (userIndex !== -1) {
+                    users.splice(userIndex, 1);
+                    updateRoleCounts();
+                    filteredUsers = [...users];
+                    renderUsers();
+                    renderRoles();
+                    updateStatistics();
+                    showAlert('success', 'Xóa user thành công!');
+                }
+            }
+        }
+
+        // Toggle user status
+        function toggleUserStatus(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.status = user.status === 'locked' ? 'active' : 'locked';
+                filteredUsers = [...users];
+                renderUsers();
+                updateStatistics();
+                showAlert('success', `${user.status === 'locked' ? 'Khóa' : 'Mở khóa'} user thành công!`);
+            }
+        }
+
+        // Reset password
+        function resetPassword(userId) {
+            if (confirm('Bạn có chắc chắn muốn đặt lại mật khẩu cho user này?')) {
+                // In real app, this would send reset password email
+                showAlert('success', 'Đã gửi email đặt lại mật khẩu!');
+            }
+        }
+
+        // Show add role modal
+        function showAddRoleModal() {
+            document.getElementById('roleModalLabel').textContent = 'Thêm Role Mới';
+            document.getElementById('roleForm').reset();
+            new bootstrap.Modal(document.getElementById('roleModal')).show();
+        }
+
+        // Edit role
+        function editRole(roleName) {
+            const role = roles.find(r => r.name === roleName);
+            if (role) {
+                document.getElementById('roleModalLabel').textContent = 'Chỉnh sửa Role';
+                document.getElementById('roleName').value = role.name;
+                document.getElementById('roleDescription').value = role.description;
+                document.getElementById('roleName').disabled = true; // Prevent changing role name
+                new bootstrap.Modal(document.getElementById('roleModal')).show();
+            }
+        }
+
+        // Save role
+        function saveRole() {
+            const roleName = document.getElementById('roleName').value.trim();
+            const roleDescription = document.getElementById('roleDescription').value.trim();
+
+            if (!roleName) {
+                alert('Vui lòng nhập tên role!');
+                return;
+            }
+
+            const existingRole = roles.find(r => r.name === roleName);
+            if (existingRole) {
+                // Update existing role
+                existingRole.description = roleDescription;
+            } else {
+                // Add new role
+                roles.push({
+                    name: roleName,
+                    description: roleDescription,
+                    userCount: 0,
+                    createdDate: new Date().toISOString().split('T')[0]
+                });
+            }
+
+            renderRoles();
+            bootstrap.Modal.getInstance(document.getElementById('roleModal')).hide();
+            showAlert('success', existingRole ? 'Cập nhật role thành công!' : 'Thêm role thành công!');
+
+            // Re-enable role name input for next time
+            document.getElementById('roleName').disabled = false;
+        }
+
+        // Delete role
+        function deleteRole(roleName) {
+            const role = roles.find(r => r.name === roleName);
+            if (role && role.userCount > 0) {
+                alert('Không thể xóa role đang được sử dụng!');
+                return;
+            }
+
+            if (confirm('Bạn có chắc chắn muốn xóa role này?')) {
+                const roleIndex = roles.findIndex(r => r.name === roleName);
+                if (roleIndex !== -1) {
+                    roles.splice(roleIndex, 1);
+                    renderRoles();
+                    showAlert('success', 'Xóa role thành công!');
+                }
+            }
+        }
+
+        // Update role counts
+        function updateRoleCounts() {
+            roles.forEach(role => {
+                role.userCount = users.filter(user => user.role === role.name).length;
+            });
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('activeUsers').textContent = users.filter(u => u.status === 'active').length;
+            document.getElementById('adminUsers').textContent = users.filter(u => u.role === 'Admin').length;
+
+            // Calculate new users today (for demo, using random number)
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('newToday').textContent = users.filter(u => u.createdDate === today).length;
+        }
+
+        // Export users to Excel (simplified version)
+        function exportUsers() {
+            const csvContent = [
+                ['STT', 'Họ tên', 'Email', 'Số điện thoại', 'Vai trò', 'Trạng thái', 'Ngày tạo'],
+                ...users.map((user, index) => [
+                    index + 1,
+                    `${user.firstName} ${user.lastName}`,
+                    user.email,
+                    user.phoneNumber || '',
+                    user.role,
+                    getStatusText(user.status),
+                    formatDate(user.createdDate)
+                ])
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `users_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+
+            showAlert('success', 'Xuất dữ liệu thành công!');
+        }
+
+        // Utility functions
+        function getStatusBadgeClass(status) {
+            switch (status) {
+                case 'active': return 'bg-success';
+                case 'inactive': return 'bg-secondary';
+                case 'locked': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'active': return 'Hoạt động';
+                case 'inactive': return 'Không hoạt động';
+                case 'locked': return 'Bị khóa';
+                default: return 'Không xác định';
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        function showAlert(type, message) {
+            const alertHTML = `
+                <div class="alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed"
+                     style="top: 20px; right: 20px; z-index: 9999;" role="alert">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', alertHTML);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                const alert = document.querySelector('.alert');
+                if (alert) {
+                    alert.remove();
+                }
+            }, 3000);
+        }
+
+        // Handle modal form submission with Enter key
+        document.getElementById('userForm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveUser();
+            }
+        });
+
+        document.getElementById('roleForm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveRole();
+            }
+        });
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,4 +1,6 @@
+wwwroot\css\FirstLogin.css
 wwwroot\css\HomeStyle.css
+wwwroot\css\Layout.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\js\site.js
