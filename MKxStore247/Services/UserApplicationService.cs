@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MKxStore247.Data;
 using MKxStore247.Models;
+using MKxStore247.Services.Interface;
 
 namespace MKxStore247.Services
 {

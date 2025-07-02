@@ -1,4 +1,5 @@
 ﻿using MKxStore247.Models;
+using MKxStore247.Services.Interface;
 
 namespace MKxStore247.Services
 {

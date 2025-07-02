@@ -1,3 +1,4 @@
+wwwroot\css\AdminLayout.css
 wwwroot\css\FirstLogin.css
 wwwroot\css\HomeStyle.css
 wwwroot\css\Layout.css

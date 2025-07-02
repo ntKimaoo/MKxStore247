@@ -1,6 +1,6 @@
 ﻿using MKxStore247.Models;
 
-namespace MKxStore247.Services
+namespace MKxStore247.Services.Interface
 {
     public interface IProductService
     {

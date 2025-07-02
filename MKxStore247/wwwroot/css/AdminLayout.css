@@ -21,7 +21,7 @@ body {
 .sidebar {
     width: 280px;
     background: linear-gradient(145deg, #1e293b, #334155);
-    backdrop-filter: blur(20px);
+/*    backdrop-filter: blur(20px);*/
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     position: fixed;
     left: 0;
@@ -135,7 +135,7 @@ body {
     margin-left: 280px;
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
+/*    backdrop-filter: blur(10px);*/
     min-height: 100vh;
 }
 
@@ -331,7 +331,7 @@ body {
 
 .dashboard-card {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
+/*    backdrop-filter: blur(20px);*/
     border-radius: 20px;
     padding: 25px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -352,10 +352,10 @@ body {
         animation: gradientMove 3s ease infinite;
     }
 
-    .dashboard-card:hover {
+/*    .dashboard-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    }
+    }*/
 
 .card-header {
     display: flex;
@@ -419,7 +419,7 @@ body {
     }
 
 /* Animations */
-@keyframes fadeInUp {
+/*@keyframes fadeInUp {
     from {
         opacity: 0;
         transform: translateY(30px);
@@ -443,7 +443,7 @@ body {
     100% {
         background-position: 0% 50%;
     }
-}
+}*/
 
 @keyframes pulse {
     0% {

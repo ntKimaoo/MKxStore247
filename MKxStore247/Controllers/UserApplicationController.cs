@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MKxStore247.Models;
-using MKxStore247.Services;
+using MKxStore247.Services.Interface;
 using System.Security.Claims;
 
 namespace MKxStore247.Controllers

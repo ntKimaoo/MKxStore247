@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\MKxStore247.1ptilff4cl.bundle.scp.css"
     },
     {
+      "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\AdminLayout.css",
+      "PackagePath": "staticwebassets\\css\\AdminLayout.css"
+    },
+    {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\FirstLogin.css",
       "PackagePath": "staticwebassets\\css\\FirstLogin.css"
     },

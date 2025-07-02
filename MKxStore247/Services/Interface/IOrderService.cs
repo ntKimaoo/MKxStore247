@@ -1,4 +1,4 @@
-﻿namespace MKxStore247.Services
+﻿namespace MKxStore247.Services.Interface
 {
     public interface IOrderService
     {

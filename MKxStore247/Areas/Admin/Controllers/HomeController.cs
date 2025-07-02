@@ -9,6 +9,7 @@ namespace MKxStore247.Areas.Admin.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["Title"]= "Admin Dashboard";
             return View();
         }
     }

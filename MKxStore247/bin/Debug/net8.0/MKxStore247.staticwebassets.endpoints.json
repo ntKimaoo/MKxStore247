@@ -2305,6 +2305,88 @@
       ]
     },
     {
+      "Route": "css/AdminLayout.5orf2j0geb.css",
+      "AssetFile": "css/AdminLayout.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9866"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1afWUZ+zpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Jul 2025 05:10:02 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "5orf2j0geb"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-1afWUZ+zpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw="
+        },
+        {
+          "Name": "label",
+          "Value": "css/AdminLayout.css"
+        }
+      ]
+    },
+    {
+      "Route": "css/AdminLayout.css",
+      "AssetFile": "css/AdminLayout.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9866"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1afWUZ+zpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Jul 2025 05:10:02 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-1afWUZ+zpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw="
+        }
+      ]
+    },
+    {
       "Route": "css/FirstLogin.8zsl0mr75k.css",
       "AssetFile": "css/FirstLogin.css",
       "Selectors": [],
