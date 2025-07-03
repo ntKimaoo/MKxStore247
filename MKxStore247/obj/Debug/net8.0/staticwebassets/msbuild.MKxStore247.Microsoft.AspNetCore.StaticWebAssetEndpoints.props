@@ -1,16 +1,16 @@
 ﻿<Project>
   <ItemGroup>
-    <StaticWebAssetEndpoint Include="_content/MKxStore247/css/AdminLayout.5orf2j0geb.css">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\AdminLayout.css'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"5orf2j0geb"},{"Name":"integrity","Value":"sha256-1afWUZ\u002Bzpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw="},{"Name":"label","Value":"_content/MKxStore247/css/AdminLayout.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"9866"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00221afWUZ\u002Bzpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw=\u0022"},{"Name":"Last-Modified","Value":"Tue, 01 Jul 2025 05:10:02 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/MKxStore247/css/AdminLayout.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\AdminLayout.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-1afWUZ\u002Bzpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"9866"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00221afWUZ\u002Bzpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw=\u0022"},{"Name":"Last-Modified","Value":"Tue, 01 Jul 2025 05:10:02 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-O0a1uuYHl2AwwVLjVDKIR60Mg9hotwq45ERUZ6JE6lc="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"9926"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022O0a1uuYHl2AwwVLjVDKIR60Mg9hotwq45ERUZ6JE6lc=\u0022"},{"Name":"Last-Modified","Value":"Thu, 03 Jul 2025 04:59:00 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/MKxStore247/css/AdminLayout.n10w274upc.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\AdminLayout.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"n10w274upc"},{"Name":"integrity","Value":"sha256-O0a1uuYHl2AwwVLjVDKIR60Mg9hotwq45ERUZ6JE6lc="},{"Name":"label","Value":"_content/MKxStore247/css/AdminLayout.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"9926"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022O0a1uuYHl2AwwVLjVDKIR60Mg9hotwq45ERUZ6JE6lc=\u0022"},{"Name":"Last-Modified","Value":"Thu, 03 Jul 2025 04:59:00 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/MKxStore247/css/FirstLogin.8zsl0mr75k.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\FirstLogin.css'))</AssetFile>
@@ -47,6 +47,18 @@
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"p77hykiaem"},{"Name":"integrity","Value":"sha256-xRAMx8tayV8m90DmYnVoM4AZYo/BD06oTZv\u002BijCTpkI="},{"Name":"label","Value":"_content/MKxStore247/css/Layout.css"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2677"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022xRAMx8tayV8m90DmYnVoM4AZYo/BD06oTZv\u002BijCTpkI=\u0022"},{"Name":"Last-Modified","Value":"Mon, 30 Jun 2025 02:17:47 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/MKxStore247/css/ManageUsers.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\ManageUsers.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-1eAPfEQ2ZSg0DY1VEyPquv6xRmGBkNoSLMHpW/zPS8A="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"5366"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00221eAPfEQ2ZSg0DY1VEyPquv6xRmGBkNoSLMHpW/zPS8A=\u0022"},{"Name":"Last-Modified","Value":"Thu, 03 Jul 2025 06:43:57 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/MKxStore247/css/ManageUsers.l4bqy1mbbe.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\ManageUsers.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"l4bqy1mbbe"},{"Name":"integrity","Value":"sha256-1eAPfEQ2ZSg0DY1VEyPquv6xRmGBkNoSLMHpW/zPS8A="},{"Name":"label","Value":"_content/MKxStore247/css/ManageUsers.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"5366"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u00221eAPfEQ2ZSg0DY1VEyPquv6xRmGBkNoSLMHpW/zPS8A=\u0022"},{"Name":"Last-Modified","Value":"Thu, 03 Jul 2025 06:43:57 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/MKxStore247/css/Register.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\Register.css'))</AssetFile>

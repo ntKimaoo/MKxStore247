@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Y+8eYEH+Sv6ckxw4xLrzu5NHcxA8vYWpSurID1uVmR0=",
+  "Hash": "hV7GpGge7mQkD11o7RZfNvXFrE3i0sFfiJsCCUwCNhQ=",
   "Source": "MKxStore247",
   "BasePath": "_content/MKxStore247",
   "Mode": "Default",
@@ -1333,8 +1333,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "5orf2j0geb",
-      "Integrity": "1afWUZ+zpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw=",
+      "Fingerprint": "n10w274upc",
+      "Integrity": "O0a1uuYHl2AwwVLjVDKIR60Mg9hotwq45ERUZ6JE6lc=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\AdminLayout.css"
@@ -1401,6 +1401,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\Layout.css"
+    },
+    {
+      "Identity": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\ManageUsers.css",
+      "SourceId": "MKxStore247",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\",
+      "BasePath": "_content/MKxStore247",
+      "RelativePath": "css/ManageUsers#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "l4bqy1mbbe",
+      "Integrity": "1eAPfEQ2ZSg0DY1VEyPquv6xRmGBkNoSLMHpW/zPS8A=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\ManageUsers.css"
     },
     {
       "Identity": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\Register.css",
@@ -2707,51 +2728,6 @@
   ],
   "Endpoints": [
     {
-      "Route": "css/AdminLayout.5orf2j0geb.css",
-      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\AdminLayout.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "9866"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"1afWUZ+zpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Tue, 01 Jul 2025 05:10:02 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "5orf2j0geb"
-        },
-        {
-          "Name": "label",
-          "Value": "css/AdminLayout.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-1afWUZ+zpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw="
-        }
-      ]
-    },
-    {
       "Route": "css/AdminLayout.css",
       "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\AdminLayout.css",
       "Selectors": [],
@@ -2762,7 +2738,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "9866"
+          "Value": "9926"
         },
         {
           "Name": "Content-Type",
@@ -2770,11 +2746,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"1afWUZ+zpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw=\""
+          "Value": "\"O0a1uuYHl2AwwVLjVDKIR60Mg9hotwq45ERUZ6JE6lc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 01 Jul 2025 05:10:02 GMT"
+          "Value": "Thu, 03 Jul 2025 04:59:00 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2784,7 +2760,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-1afWUZ+zpf4oYSJ95cW/O3ryBaOq5bOXw5D1QqHEpsw="
+          "Value": "sha256-O0a1uuYHl2AwwVLjVDKIR60Mg9hotwq45ERUZ6JE6lc="
+        }
+      ]
+    },
+    {
+      "Route": "css/AdminLayout.n10w274upc.css",
+      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\AdminLayout.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9926"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"O0a1uuYHl2AwwVLjVDKIR60Mg9hotwq45ERUZ6JE6lc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Jul 2025 04:59:00 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "n10w274upc"
+        },
+        {
+          "Name": "label",
+          "Value": "css/AdminLayout.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-O0a1uuYHl2AwwVLjVDKIR60Mg9hotwq45ERUZ6JE6lc="
         }
       ]
     },
@@ -3031,6 +3052,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-xRAMx8tayV8m90DmYnVoM4AZYo/BD06oTZv+ijCTpkI="
+        }
+      ]
+    },
+    {
+      "Route": "css/ManageUsers.css",
+      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\ManageUsers.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5366"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1eAPfEQ2ZSg0DY1VEyPquv6xRmGBkNoSLMHpW/zPS8A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Jul 2025 06:43:57 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-1eAPfEQ2ZSg0DY1VEyPquv6xRmGBkNoSLMHpW/zPS8A="
+        }
+      ]
+    },
+    {
+      "Route": "css/ManageUsers.l4bqy1mbbe.css",
+      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\ManageUsers.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5366"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1eAPfEQ2ZSg0DY1VEyPquv6xRmGBkNoSLMHpW/zPS8A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Jul 2025 06:43:57 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "l4bqy1mbbe"
+        },
+        {
+          "Name": "label",
+          "Value": "css/ManageUsers.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-1eAPfEQ2ZSg0DY1VEyPquv6xRmGBkNoSLMHpW/zPS8A="
         }
       ]
     },

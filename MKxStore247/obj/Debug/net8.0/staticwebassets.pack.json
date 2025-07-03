@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets\\css\\Layout.css"
     },
     {
+      "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\ManageUsers.css",
+      "PackagePath": "staticwebassets\\css\\ManageUsers.css"
+    },
+    {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\Register.css",
       "PackagePath": "staticwebassets\\css\\Register.css"
     },

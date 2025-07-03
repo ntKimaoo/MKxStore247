@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MKxStore247.Data;
 using MKxStore247.Models;
 using MKxStore247.Services.Interface;
+using PagedList;
 
 namespace MKxStore247.Areas.Admin.Controllers
 {
@@ -10,24 +13,96 @@ namespace MKxStore247.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         private readonly IUserApplicationService _userService;
-
-        public UsersController(IUserApplicationService userService)
+        private readonly MKxStore247Context _context;
+        public UsersController(IUserApplicationService userService, MKxStore247Context context)
         {
             _userService = userService;
+            _context = context;
         }
 
         // GET: Admin/Users
-        public async Task<IActionResult> Index(string? searchTerm = "")
+        public async Task<IActionResult> Index(string? searchTerm, string? statusFilter, string? dateFilter,
+    string? sortBy = "created", string? sortOrder = "desc", int pageSize = 10, int page = 1,
+    DateTime? fromDate = null, DateTime? toDate = null)
         {
-            //ViewData["Layout"] = GetActiveLayout();
+            var query = _context.Users.AsQueryable();
+            // Apply filters
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(u => u.UserName.Contains(searchTerm) ||
+                                         u.Email.Contains(searchTerm) ||
+                                         u.PhoneNumber.Contains(searchTerm));
 
-            var users = string.IsNullOrEmpty(searchTerm)
-                ? await _userService.GetAllUsersAsync()
-                : await _userService.SearchUsersAsync(searchTerm);
+            }
 
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                bool isActive = statusFilter == "active";
+                query = query.Where(u => u.IsActive == isActive);
+            }
+
+            // Apply date filters
+            if (!string.IsNullOrEmpty(dateFilter))
+            {
+                DateTime filterDate = DateTime.Now;
+                switch (dateFilter)
+                {
+                    case "today":
+                        query = query.Where(u => u.CreatedAt.Date == filterDate.Date);
+                        break;
+                    case "week":
+                        var startOfWeek = filterDate.AddDays(-(int)filterDate.DayOfWeek);
+                        query = query.Where(u => u.CreatedAt >= startOfWeek);
+                        break;
+                    case "month":
+                        query = query.Where(u => u.CreatedAt.Month == filterDate.Month &&
+                                                u.CreatedAt.Year == filterDate.Year);
+                        break;
+                    case "year":
+                        query = query.Where(u => u.CreatedAt.Year == filterDate.Year);
+                        break;
+                }
+            }
+
+            if (fromDate.HasValue)
+                query = query.Where(u => u.CreatedAt >= fromDate.Value);
+
+            if (toDate.HasValue)
+                query = query.Where(u => u.CreatedAt <= toDate.Value);
+
+            // Apply sorting
+            switch (sortBy)
+            {
+                case "name":
+                    query = sortOrder == "asc" ? query.OrderBy(u => u.FullName) : query.OrderByDescending(u => u.FullName);
+                    break;
+                case "email":
+                    query = sortOrder == "asc" ? query.OrderBy(u => u.Email) : query.OrderByDescending(u => u.Email);
+                    break;
+                case "status":
+                    query = sortOrder == "asc" ? query.OrderBy(u => u.IsActive) : query.OrderByDescending(u => u.IsActive);
+                    break;
+                default:
+                    query = sortOrder == "asc" ? query.OrderBy(u => u.CreatedAt) : query.OrderByDescending(u => u.CreatedAt);
+                    break;
+            }
+
+            // Pass data to ViewBag
             ViewBag.SearchTerm = searchTerm;
-            return View(users);
+            ViewBag.StatusFilter = statusFilter;
+            ViewBag.DateFilter = dateFilter;
+            ViewBag.SortBy = sortBy;
+            ViewBag.SortOrder = sortOrder;
+            ViewBag.PageSize = pageSize;
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+            ViewBag.TotalUsers = await _context.Users.CountAsync();
+
+            var pagedUsers = query.ToPagedList(page, pageSize);
+            return View(pagedUsers);
         }
+
+
 
         // GET: Admin/Users/Details/5
         public async Task<IActionResult> Details(string id)
