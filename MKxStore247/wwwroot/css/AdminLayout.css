@@ -160,7 +160,8 @@ body {
 .header-left {
     display: flex;
     align-items: center;
-    gap: 20px;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .sidebar-toggle {
@@ -181,7 +182,8 @@ body {
 
 .breadcrumb {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
+    font-size: 20px;
+    margin-top: 15px;
 }
 
     .breadcrumb a {

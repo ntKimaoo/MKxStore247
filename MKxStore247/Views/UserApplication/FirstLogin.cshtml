@@ -86,18 +86,39 @@
 		const avatarPreview = document.getElementById('avatarPreview');
 		const avatarPlaceholder = document.getElementById('avatarPlaceholder');
 
-		avatarInput.addEventListener('change', function(e) {
+		avatarInput.addEventListener('change', function (e) {
 			const file = e.target.files[0];
 			if (file) {
 				const reader = new FileReader();
-				reader.onload = function(e) {
+				reader.onload = function (e) {
 					avatarPreview.src = e.target.result;
 					avatarPreview.classList.remove('hidden');
 					avatarPlaceholder.classList.add('hidden');
 				}
 				reader.readAsDataURL(file);
+
+				// Upload file lên server
+				const formData = new FormData();
+				formData.append('file', file);
+
+				fetch('/UserApplication/UploadAvatar', {
+					method: 'POST',
+					body: formData
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						document.getElementById('avatarUrl').value = data.filePath;
+					} else {
+						alert('Upload thất bại!');
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
 			}
 		});
+
 
 		// Form validation and submission
 		const form = document.getElementById('setupForm');

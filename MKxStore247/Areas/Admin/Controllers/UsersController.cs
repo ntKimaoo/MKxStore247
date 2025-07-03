@@ -17,7 +17,7 @@ namespace MKxStore247.Areas.Admin.Controllers
         }
 
         // GET: Admin/Users
-        public async Task<IActionResult> Index(string searchTerm = "")
+        public async Task<IActionResult> Index(string? searchTerm = "")
         {
             //ViewData["Layout"] = GetActiveLayout();
 
@@ -33,15 +33,32 @@ namespace MKxStore247.Areas.Admin.Controllers
         public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
-                return NotFound();
+                return Json(new { success = false, message = "ID không hợp lệ" });
 
-            //ViewData["Layout"] = GetActiveLayout();
             var user = await _userService.GetUserByIdAsync(id);
             if (user == null)
-                return NotFound();
+                return Json(new { success = false, message = "Không tìm thấy người dùng" });
 
-            ViewBag.UserRoles = await _userService.GetUserRolesAsync(id);
-            return View(user);
+            var userRoles = await _userService.GetUserRolesAsync(id);
+
+            var result = new
+            {
+                success = true,
+                data = new
+                {
+                    user.Id,
+                    user.FullName,
+                    user.UserName,
+                    user.Email,
+                    user.PhoneNumber,
+                    user.IsActive,
+                    user.CreatedAt,
+                    user.AvatarUrl,
+                    Roles = userRoles
+                }
+            };
+
+            return Json(result);
         }
 
         // GET: Admin/Users/Create

@@ -52,5 +52,23 @@ namespace MKxStore247.Controllers
                 return StatusCode(500, "Lỗi hệ thống");
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> UploadAvatar(IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                var filePath = Path.Combine("wwwroot/uploads/avatars", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                return Json(new { success = true, filePath = "/uploads/avatars/" + fileName });
+            }
+            return Json(new { success = false });
+        }
+
     }
 }

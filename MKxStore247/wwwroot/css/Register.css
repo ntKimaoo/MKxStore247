@@ -1,0 +1,324 @@
+﻿.register-container {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: -20px -15px;
+    padding: 40px 15px;
+}
+
+.register-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.register-left {
+    background: linear-gradient(135deg, #FAA03F 0%, #ff7043 100%);
+    color: white;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+    .register-left::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+        opacity: 0.4;
+    }
+
+    .register-left > * {
+        position: relative;
+        z-index: 1;
+    }
+
+.welcome-title {
+    font-size: 2.8rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.welcome-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.features-list {
+    text-align: left;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+    .feature-item i {
+        width: 20px;
+        margin-right: 12px;
+        color: #a7f3d0;
+    }
+
+.register-right {
+    padding: 60px 40px;
+}
+
+.register-form-title {
+    color: #333;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.register-form-subtitle {
+    color: #666;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-floating {
+    margin-bottom: 25px;
+}
+
+    .form-floating .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        height: 58px;
+    }
+
+        .form-floating .form-control:focus {
+            border-color: #FDD09F;
+        }
+
+    .form-floating label {
+        color: #666;
+        font-weight: 500;
+    }
+
+.password-strength {
+    margin-top: -15px;
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+}
+
+.strength-bar {
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    margin: 8px 0;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.strength-weak {
+    background: #ef4444;
+    width: 25%;
+}
+
+.strength-fair {
+    background: #f59e0b;
+    width: 50%;
+}
+
+.strength-good {
+    background: #10b981;
+    width: 75%;
+}
+
+.strength-strong {
+    background: #059669;
+    width: 100%;
+}
+
+.btn-register {
+    background: linear-gradient(135deg, #FAA03F 0%, #ff7043 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        background: linear-gradient(135deg, #ff7043 0%, #FAA03F 100%);
+    }
+
+    .btn-register:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+.register-links {
+    text-align: center;
+    margin-top: 30px;
+}
+
+    .register-links a {
+        color: #ff7043;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+        .register-links a:hover {
+            color: #FAA03F;
+            text-decoration: underline;
+        }
+
+.divider {
+    text-align: center;
+    margin: 35px 0;
+    position: relative;
+}
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e0e0e0;
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 20px;
+        color: #666;
+        font-weight: 500;
+    }
+
+.external-register-btn {
+    background: #4285f4;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    color: white;
+    font-weight: 500;
+    margin: 5px;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 200px;
+}
+
+    .external-register-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+    }
+
+.user-plus-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+.terms-checkbox {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+    .terms-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin-right: 12px;
+        margin-top: 2px;
+        accent-color: #4f46e5;
+        cursor: pointer;
+    }
+
+    .terms-checkbox a {
+        color: #4f46e5;
+        text-decoration: none;
+    }
+
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+@media (max-width: 768px) {
+    .register-left {
+        display: none;
+    }
+
+    .register-right {
+        padding: 40px 30px;
+    }
+
+    .register-container {
+        padding: 20px 15px;
+    }
+
+    .register-form-title {
+        font-size: 1.8rem;
+    }
+}
+
+.text-danger {
+    font-size: 0.875rem;
+    margin-top: 5px;
+}
+
+.validation-summary-errors {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: #c53030;
+}
+
+.loading-spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

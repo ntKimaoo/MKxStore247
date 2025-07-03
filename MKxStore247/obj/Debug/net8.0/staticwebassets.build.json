@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "P8rX735n1wbTeVyMUmPj8pQeTUXN+Fs7yqanzHSv5V4=",
+  "Hash": "Y+8eYEH+Sv6ckxw4xLrzu5NHcxA8vYWpSurID1uVmR0=",
   "Source": "MKxStore247",
   "BasePath": "_content/MKxStore247",
   "Mode": "Default",
@@ -1375,8 +1375,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "cqcxkvnh8h",
-      "Integrity": "tN4ayAQ19ydzebDYMzfvK0t1EI5dg71LPGIax7iJ8Vk=",
+      "Fingerprint": "qdq7di8lfz",
+      "Integrity": "sgkfKecui0mOEFql5vB4sYPZg8Of7JLOJzBGOFkG0No=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\HomeStyle.css"
@@ -1401,6 +1401,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\Layout.css"
+    },
+    {
+      "Identity": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\Register.css",
+      "SourceId": "MKxStore247",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\",
+      "BasePath": "_content/MKxStore247",
+      "RelativePath": "css/Register#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "w6txqg0kw2",
+      "Integrity": "CKzxY2IYMaUBjBNqhIdq3fZ3DQFHvuMCeZi1+YKfR9Q=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\Register.css"
     },
     {
       "Identity": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\site.css",
@@ -1464,6 +1485,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
+    },
+    {
+      "Identity": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\js\\UserManagement.js",
+      "SourceId": "MKxStore247",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\",
+      "BasePath": "_content/MKxStore247",
+      "RelativePath": "js/UserManagement#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "euiign1er0",
+      "Integrity": "5ot9xbbe125bycvR3V+KV+iwCUm1fz6vSYWOeLSit0g=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\UserManagement.js"
     },
     {
       "Identity": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
@@ -2829,51 +2871,6 @@
       ]
     },
     {
-      "Route": "css/HomeStyle.cqcxkvnh8h.css",
-      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\HomeStyle.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "3861"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"tN4ayAQ19ydzebDYMzfvK0t1EI5dg71LPGIax7iJ8Vk=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 30 Jun 2025 02:16:15 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "cqcxkvnh8h"
-        },
-        {
-          "Name": "label",
-          "Value": "css/HomeStyle.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-tN4ayAQ19ydzebDYMzfvK0t1EI5dg71LPGIax7iJ8Vk="
-        }
-      ]
-    },
-    {
       "Route": "css/HomeStyle.css",
       "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\HomeStyle.css",
       "Selectors": [],
@@ -2884,7 +2881,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "3861"
+          "Value": "3838"
         },
         {
           "Name": "Content-Type",
@@ -2892,11 +2889,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"tN4ayAQ19ydzebDYMzfvK0t1EI5dg71LPGIax7iJ8Vk=\""
+          "Value": "\"sgkfKecui0mOEFql5vB4sYPZg8Of7JLOJzBGOFkG0No=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 30 Jun 2025 02:16:15 GMT"
+          "Value": "Thu, 03 Jul 2025 02:29:13 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -2906,7 +2903,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-tN4ayAQ19ydzebDYMzfvK0t1EI5dg71LPGIax7iJ8Vk="
+          "Value": "sha256-sgkfKecui0mOEFql5vB4sYPZg8Of7JLOJzBGOFkG0No="
+        }
+      ]
+    },
+    {
+      "Route": "css/HomeStyle.qdq7di8lfz.css",
+      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\HomeStyle.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3838"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"sgkfKecui0mOEFql5vB4sYPZg8Of7JLOJzBGOFkG0No=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Jul 2025 02:29:13 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qdq7di8lfz"
+        },
+        {
+          "Name": "label",
+          "Value": "css/HomeStyle.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-sgkfKecui0mOEFql5vB4sYPZg8Of7JLOJzBGOFkG0No="
         }
       ]
     },
@@ -2989,6 +3031,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-xRAMx8tayV8m90DmYnVoM4AZYo/BD06oTZv+ijCTpkI="
+        }
+      ]
+    },
+    {
+      "Route": "css/Register.css",
+      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\Register.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6469"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CKzxY2IYMaUBjBNqhIdq3fZ3DQFHvuMCeZi1+YKfR9Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Jul 2025 02:58:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-CKzxY2IYMaUBjBNqhIdq3fZ3DQFHvuMCeZi1+YKfR9Q="
+        }
+      ]
+    },
+    {
+      "Route": "css/Register.w6txqg0kw2.css",
+      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\Register.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6469"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CKzxY2IYMaUBjBNqhIdq3fZ3DQFHvuMCeZi1+YKfR9Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Jul 2025 02:58:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "w6txqg0kw2"
+        },
+        {
+          "Name": "label",
+          "Value": "css/Register.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-CKzxY2IYMaUBjBNqhIdq3fZ3DQFHvuMCeZi1+YKfR9Q="
         }
       ]
     },
@@ -5455,6 +5579,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo="
+        }
+      ]
+    },
+    {
+      "Route": "js/UserManagement.euiign1er0.js",
+      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\js\\UserManagement.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "19725"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5ot9xbbe125bycvR3V+KV+iwCUm1fz6vSYWOeLSit0g=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Jul 2025 02:12:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "euiign1er0"
+        },
+        {
+          "Name": "label",
+          "Value": "js/UserManagement.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-5ot9xbbe125bycvR3V+KV+iwCUm1fz6vSYWOeLSit0g="
+        }
+      ]
+    },
+    {
+      "Route": "js/UserManagement.js",
+      "AssetFile": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\js\\UserManagement.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "19725"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5ot9xbbe125bycvR3V+KV+iwCUm1fz6vSYWOeLSit0g=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Jul 2025 02:12:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5ot9xbbe125bycvR3V+KV+iwCUm1fz6vSYWOeLSit0g="
         }
       ]
     },

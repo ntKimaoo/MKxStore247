@@ -21,12 +21,20 @@
       "PackagePath": "staticwebassets\\css\\Layout.css"
     },
     {
+      "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\Register.css",
+      "PackagePath": "staticwebassets\\css\\Register.css"
+    },
+    {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\js\\UserManagement.js",
+      "PackagePath": "staticwebassets\\js\\UserManagement.js"
     },
     {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\js\\site.js",
