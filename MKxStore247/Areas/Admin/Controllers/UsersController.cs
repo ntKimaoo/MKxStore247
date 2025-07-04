@@ -25,7 +25,7 @@ namespace MKxStore247.Areas.Admin.Controllers
     string? sortBy = "created", string? sortOrder = "desc", int pageSize = 10, int page = 1,
     DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var query = _context.Users.AsQueryable();
+            var query = _context.Users.Where(u=>u.IsDeleted==false).AsQueryable();
             // Apply filters
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -96,7 +96,7 @@ namespace MKxStore247.Areas.Admin.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
-            ViewBag.TotalUsers = await _context.Users.CountAsync();
+            ViewBag.TotalUsers = await query.CountAsync();
 
             var pagedUsers = query.ToPagedList(page, pageSize);
             return View(pagedUsers);
@@ -136,13 +136,6 @@ namespace MKxStore247.Areas.Admin.Controllers
             return Json(result);
         }
 
-        // GET: Admin/Users/Create
-        public IActionResult Create()
-        {
-            //ViewData["Layout"] = GetActiveLayout();
-            return View(new UserApplication());
-        }
-
         // POST: Admin/Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -164,8 +157,8 @@ namespace MKxStore247.Areas.Admin.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
-            return View(user);
+            TempData["Success"] = "Tạo người dùng thất bại!";
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Admin/Users/Edit/5
@@ -179,7 +172,7 @@ namespace MKxStore247.Areas.Admin.Controllers
             if (user == null)
                 return NotFound();
 
-            return View(user);
+            return Json(user);
         }
 
         // POST: Admin/Users/Edit/5
@@ -207,7 +200,8 @@ namespace MKxStore247.Areas.Admin.Controllers
                 }
             }
 
-            return View(user);
+            TempData["Error"] = "Cập nhật người dùng thất bại!";
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Admin/Users/Delete/5
@@ -247,57 +241,57 @@ namespace MKxStore247.Areas.Admin.Controllers
         }
 
         // GET: Admin/Users/ManageRoles/5
-        public async Task<IActionResult> ManageRoles(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-                return NotFound();
+        //public async Task<IActionResult> ManageRoles(string id)
+        //{
+        //    if (string.IsNullOrEmpty(id))
+        //        return NotFound();
 
-            //ViewData["Layout"] = GetActiveLayout();
-            var user = await _userService.GetUserByIdAsync(id);
-            if (user == null)
-                return NotFound();
+        //    //ViewData["Layout"] = GetActiveLayout();
+        //    var user = await _userService.GetUserByIdAsync(id);
+        //    if (user == null)
+        //        return NotFound();
 
-            ViewBag.UserRoles = await _userService.GetUserRolesAsync(id);
-            ViewBag.AllRoles = new[] { "Admin", "Manager", "User" }; // Customize as needed
+        //    ViewBag.UserRoles = await _userService.GetUserRolesAsync(id);
+        //    ViewBag.AllRoles = new[] { "Admin", "Manager", "User" }; // Customize as needed
 
-            return View(user);
-        }
+        //    return View(user);
+        //}
 
         // POST: Admin/Users/AssignRole
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignRole(string userId, string role)
-        {
-            var result = await _userService.AddToRoleAsync(userId, role);
-            if (result.Succeeded)
-            {
-                TempData["Success"] = "Đã gán quyền thành công!";
-            }
-            else
-            {
-                TempData["Error"] = "Có lỗi khi gán quyền!";
-            }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AssignRole(string userId, string role)
+        //{
+        //    var result = await _userService.AddToRoleAsync(userId, role);
+        //    if (result.Succeeded)
+        //    {
+        //        TempData["Success"] = "Đã gán quyền thành công!";
+        //    }
+        //    else
+        //    {
+        //        TempData["Error"] = "Có lỗi khi gán quyền!";
+        //    }
 
-            return RedirectToAction(nameof(ManageRoles), new { id = userId });
-        }
+        //    return RedirectToAction(nameof(ManageRoles), new { id = userId });
+        //}
 
-        // POST: Admin/Users/RemoveRole
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveRole(string userId, string role)
-        {
-            var result = await _userService.RemoveFromRoleAsync(userId, role);
-            if (result.Succeeded)
-            {
-                TempData["Success"] = "Đã xóa quyền thành công!";
-            }
-            else
-            {
-                TempData["Error"] = "Có lỗi khi xóa quyền!";
-            }
+        //// POST: Admin/Users/RemoveRole
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> RemoveRole(string userId, string role)
+        //{
+        //    var result = await _userService.RemoveFromRoleAsync(userId, role);
+        //    if (result.Succeeded)
+        //    {
+        //        TempData["Success"] = "Đã xóa quyền thành công!";
+        //    }
+        //    else
+        //    {
+        //        TempData["Error"] = "Có lỗi khi xóa quyền!";
+        //    }
 
-            return RedirectToAction(nameof(ManageRoles), new { id = userId });
-        }
+        //    return RedirectToAction(nameof(ManageRoles), new { id = userId });
+        //}
 
        
     }

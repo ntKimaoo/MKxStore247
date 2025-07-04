@@ -28,21 +28,13 @@ namespace MKxStore247.Controllers
 
             if (user != null)
             {
-                var roles = await _userManager.GetRolesAsync(user);
-
-                if (roles.Contains("Admin"))
+                var role = await _userManager.GetRolesAsync(user);
+                if (role.Contains("Admin"))
                 {
-                    ViewData["Layout"] = "~/Views/Shared/_Layout.cshtml";
-                }
-                else
-                {
-                    ViewData["Layout"] = "~/Views/Shared/_Layout.cshtml";
+                    return Redirect("/Admin");
                 }
             }
-            else
-            {
-                ViewData["Layout"] = "~/Views/Shared/_Layout.cshtml";
-            }
+            
             return View();
         }
 

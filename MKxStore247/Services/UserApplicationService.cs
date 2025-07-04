@@ -110,8 +110,10 @@ namespace MKxStore247.Services
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return IdentityResult.Failed();
-
-            return await _userManager.DeleteAsync(user);
+            user.IsDeleted = true;
+            user.IsActive = false;
+            await _context.SaveChangesAsync();
+            return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> ToggleUserStatusAsync(string id)

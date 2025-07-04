@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<UserApplication> SignInManager
+@inject UserManager<UserApplication> UserManager
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -43,7 +46,7 @@
 	                </a>
                 </div>
                 <div class="nav-item">
-	                <a href="/CategoryProduct" class="nav-link">
+                    <a asp-area="Admin" asp-controller="CategoryProduct" asp-action="Index" class="nav-link">
                         <i class="fa-solid fa-layer-group"></i>
 		                <span class="nav-text">Danh mục</span>
 	                </a>
@@ -92,7 +95,16 @@
                 </div>
             </nav>
         </div>
-
+        @{
+	        var user = await UserManager.GetUserAsync(User);
+	        string roles = "";
+	        if (user != null)
+	        {
+		        var role = await UserManager.GetRolesAsync(user);
+		        roles = string.Join(", ", role).Trim();
+	        }
+		
+        }
         <!-- Main Content -->
         <div class="main-content" id="mainContent">
             <!-- Header -->
@@ -102,7 +114,7 @@
                         <i class="fas fa-bars"></i>
                     </button>
                     <nav class="breadcrumb">
-                        <a href="/">Trang chủ</a> / <span>@ViewData["Title"]</span>
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index">Trang chủ</a> / <span>@ViewData["Title"]</span>
                     </nav>
                 </div>
 
@@ -118,11 +130,18 @@
                     </button>
 
                     <div class="user-profile">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
+	                    <div class="user-avatar">
+		                    @if (!string.IsNullOrEmpty(user.AvatarUrl))
+		                    {
+			                    <img src="@user.AvatarUrl" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+		                    }
+		                    else
+		                    {
+			                    @(user.FullName?.Substring(0, 1).ToUpper() ?? "U")
+		                    }
+	                    </div>
                         <div class="user-info">
-                            <div class="user-name">Admin</div>
+                            <div class="user-name">@user.UserName</div>
                             <div class="user-role">Quản trị viên</div>
                         </div>
                         <i class="fas fa-chevron-down" style="color: rgba(255,255,255,0.6); font-size: 12px;"></i>

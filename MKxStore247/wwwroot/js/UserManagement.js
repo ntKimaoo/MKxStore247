@@ -22,9 +22,8 @@ function openDetailsModal(userId) {
 }
 
 function loadUserDetails(userId) {
-    var currentUrl = window.location.href;
     $.ajax({
-        url: currentUrl + "/Details", // Đường dẫn controller của bạn
+        url: 'Users/Details', // Đường dẫn controller của bạn
         type: 'GET',
         data: { id: userId },
         success: function (response) {
@@ -37,8 +36,8 @@ function loadUserDetails(userId) {
                             <div class="col-md-3 text-center">
                                 <div class="user-avatar mx-auto">
                                     ${user.avatarUrl
-                        ? `<img src="${user.avatarUrl}" alt="Avatar" class="img-fluid rounded-circle mb-3">`
-                        : `<div class="avatar-placeholder">${user.fullName.charAt(0).toUpperCase()}</div>`
+                    ? `<img src="${user.avatarUrl}" alt="Avatar" class="img-fluid rounded-circle mb-3">`
+                    : `<div class="avatar-placeholder">${user.userName.charAt(0).toUpperCase()}</div>`
                     }
                                 </div>
                             </div>
@@ -109,24 +108,35 @@ function openCreateModal() {
 
 function openEditModal(userId) {
     currentUserId = userId;
-    const user = sampleUsers[userId];
-    if (!user) return;
 
-    document.getElementById('userFormModalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Chỉnh sửa người dùng';
-    document.getElementById('userId').value = user.id;
-    document.getElementById('fullName').value = user.fullName;
-    document.getElementById('userName').value = user.userName;
-    document.getElementById('email').value = user.email;
-    document.getElementById('phoneNumber').value = user.phoneNumber || '';
-    document.getElementById('isActive').checked = user.isActive;
+    $.ajax({
+        url: 'Users/Edit',
+        type: 'GET',
+        data: { id: userId },
+        success: function (user) {
+            if (!user) return;
 
-    document.getElementById('passwordSection').style.display = 'none';
-    document.getElementById('password').required = false;
-    document.getElementById('confirmPassword').required = false;
+            document.getElementById('userFormModalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Chỉnh sửa người dùng';
+            document.getElementById('userId').value = user.id;
+            document.getElementById('fullName').value = user.fullName;
+            document.getElementById('userName').value = user.userName;
+            document.getElementById('email').value = user.email;
+            document.getElementById('phoneNumber').value = user.phoneNumber || '';
+            document.getElementById('isActive').checked = user.isActive;
 
-    const modal = new bootstrap.Modal(document.getElementById('userFormModal'));
-    modal.show();
+            document.getElementById('passwordSection').style.display = 'none';
+            document.getElementById('password').required = false;
+            document.getElementById('confirmPassword').required = false;
+
+            const modal = new bootstrap.Modal(document.getElementById('userFormModal'));
+            modal.show();
+        },
+        error: function () {
+            alert('Không thể tải thông tin người dùng.');
+        }
+    });
 }
+
 
 function openRoleModal(userId) {
     currentUserId = userId;
