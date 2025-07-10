@@ -1,0 +1,182 @@
+﻿@model CategoryProduct
+
+<div class="modal-header">
+    <h5 class="modal-title">
+        <i class="fas fa-info-circle text-info"></i>
+        Chi tiết danh mục
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-0">
+                <div class="card-body p-0">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td class="fw-bold text-muted" style="width: 30%;">ID:</td>
+                            <td>@Model.CategoryId</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-muted">Tên danh mục:</td>
+                            <td><strong class="text-primary">@Model.CategoryName</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-muted">Mô tả:</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(Model.Description))
+                                {
+                                    <span>@Model.Description</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted fst-italic">Không có mô tả</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-muted">Trạng thái:</td>
+                            <td>
+                                <span class="badge @(Model.IsActive ? "bg-success" : "bg-danger") fs-6">
+                                    <i class="fas @(Model.IsActive ? "fa-check-circle" : "fa-times-circle")"></i>
+                                    @(Model.IsActive ? "Đang hoạt động" : "Không hoạt động")
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-muted">Ngày tạo:</td>
+                            <td>
+                                <i class="fas fa-calendar-alt text-muted me-2"></i>
+                                @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-muted">Số sản phẩm:</td>
+                            <td>
+                                <span class="badge bg-info fs-6">
+                                    <i class="fas fa-box me-1"></i>
+                                    @(Model.Products?.Count ?? 0) sản phẩm
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted">Hình ảnh danh mục</label>
+                </div>
+                <div class="border rounded p-3" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="@Model.CategoryName" class="img-fluid rounded shadow-sm" style="max-height: 180px; max-width: 100%;" />
+                    }
+                    else
+                    {
+                        <div class="text-muted">
+                            <i class="fas fa-image fa-4x mb-3"></i>
+                            <div>Không có hình ảnh</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Products != null && Model.Products.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <h6 class="fw-bold text-muted mb-3">
+                    <i class="fas fa-list me-2"></i>
+                    Sản phẩm trong danh mục (@Model.Products.Count)
+                </h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.Products.Take(10))
+                            {
+                                <tr>
+                                    <td>@product.ProductName</td>
+                                    <td>@product.Price.ToString("C0")</td>
+                                    <td>
+                                        <span class="badge @(product.IsActive ? "bg-success" : "bg-danger") badge-sm">
+                                            @(product.IsActive ? "Hoạt động" : "Không hoạt động")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @if (Model.Products.Count > 10)
+                    {
+                        <div class="text-center mt-2">
+                            <small class="text-muted">... và @(Model.Products.Count - 10) sản phẩm khác</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Thông tin:</strong> Danh mục này chưa có sản phẩm nào.
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-light border">
+                <h6 class="fw-bold mb-2">
+                    <i class="fas fa-chart-line text-primary me-2"></i>
+                    Thống kê nhanh
+                </h6>
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="border-end">
+                            <div class="fw-bold text-primary fs-4">@(Model.Products?.Count ?? 0)</div>
+                            <small class="text-muted">Tổng sản phẩm</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border-end">
+                            <div class="fw-bold text-success fs-4">@(Model.Products?.Count(p => p.IsActive) ?? 0)</div>
+                            <small class="text-muted">Đang hoạt động</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="fw-bold text-danger fs-4">@(Model.Products?.Count(p => !p.IsActive) ?? 0)</div>
+                        <small class="text-muted">Không hoạt động</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="fas fa-times"></i> Đóng
+    </button>
+    <button type="button" class="btn btn-primary" onclick="openEditModal(@Model.CategoryId); bootstrap.Modal.getInstance(document.getElementById('detailsModal')).hide();">
+        <i class="fas fa-edit"></i> Chỉnh sửa
+    </button>
+</div>

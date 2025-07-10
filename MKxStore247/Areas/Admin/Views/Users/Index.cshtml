@@ -342,7 +342,7 @@
 													title="@(user.IsActive ? "Khóa tài khoản" : "Kích hoạt tài khoản")">
 												<i class="fas fa-@(user.IsActive ? "lock" : "unlock")"></i>
 											</button>
-											<a asp-action="ManageRoles" asp-route-id="@user.Id"
+											<a asp-action="" asp-route-id="@user.Id"
 											   class="btn btn-sm btn-outline-primary" title="Quản lý quyền">
 												<i class="fas fa-user-cog"></i>
 											</a>

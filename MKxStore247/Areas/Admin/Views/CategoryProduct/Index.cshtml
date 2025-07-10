@@ -1,1242 +1,362 @@
-﻿
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Quản Lý Danh Mục</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
-            --text-light: #8892b0;
-            --text-dark: #2d3748;
-            --bg-light: #f8fafc;
-            --bg-dark: #1a202c;
-            --sidebar-width: 280px;
-            --sidebar-collapsed: 80px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--text-dark);
-        }
-
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
-            color: white;
-            transition: all 0.3s ease;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
-        }
-
-            .sidebar.collapsed {
-                width: var(--sidebar-collapsed);
-            }
-
-        .sidebar-header {
-            padding: 2rem 1.5rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .logo {
-            font-size: 2.5rem;
-            color: var(--accent-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar.collapsed .logo-text {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-
-        .nav-menu {
-            padding: 1rem 0;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-            .nav-link:hover {
-                background: rgba(255,255,255,0.1);
-                color: white;
-                transform: translateX(5px);
-            }
-
-            .nav-link.active {
-                background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-                color: white;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            }
-
-            .nav-link i {
-                width: 20px;
-                margin-right: 1rem;
-                font-size: 1.2rem;
-            }
-
-        .sidebar.collapsed .nav-text {
-            opacity: 0;
-            transform: translateX(-10px);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            transition: all 0.3s ease;
-            background: var(--bg-light);
-        }
-
-            .main-content.expanded {
-                margin-left: var(--sidebar-collapsed);
-            }
-
-        /* Header */
-        .header {
-            background: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .sidebar-toggle {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--text-dark);
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-            .sidebar-toggle:hover {
-                background: var(--bg-light);
-            }
-
-        .breadcrumb {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-            .breadcrumb a {
-                color: var(--primary-color);
-                text-decoration: none;
-            }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-input {
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            width: 300px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-            .search-input:focus {
-                outline: none;
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            }
-
-        .search-icon {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light);
-        }
-
-        .notification-btn {
-            position: relative;
-            background: none;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-            .notification-btn:hover {
-                background: var(--bg-light);
-            }
-
-        .notification-badge {
-            position: absolute;
-            top: 0.25rem;
-            right: 0.25rem;
-            background: #ef4444;
-            color: white;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 50px;
-            min-width: 20px;
-            text-align: center;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-            .user-profile:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-            }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .user-info {
-            text-align: left;
-        }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .user-role {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        /* Content Area */
-        .content-area {
-            padding: 2rem;
-        }
-
-        .page-header {
-            margin-bottom: 2rem;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .page-subtitle {
-            color: var(--text-light);
-            font-size: 1rem;
-        }
-
-        .content-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #f1f5f9;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-        }
-
-            .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-            }
-
-        .btn-success {
-            background: linear-gradient(45deg, #10b981, #059669);
-            color: white;
-        }
-
-            .btn-success:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
-            }
-
-        .btn-warning {
-            background: linear-gradient(45deg, #f59e0b, #d97706);
-            color: white;
-        }
-
-            .btn-warning:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
-            }
-
-        .btn-danger {
-            background: linear-gradient(45deg, #ef4444, #dc2626);
-            color: white;
-        }
-
-            .btn-danger:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-            }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .table {
-            width: 100%;
-            margin-bottom: 0;
-        }
-
-            .table thead th {
-                background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-                color: white;
-                font-weight: 600;
-                padding: 1rem;
-                border: none;
-                text-align: left;
-            }
-
-            .table tbody tr {
-                border-bottom: 1px solid #e2e8f0;
-                transition: all 0.3s ease;
-            }
-
-                .table tbody tr:hover {
-                    background: #f8fafc;
-                    transform: scale(1.01);
-                }
-
-            .table tbody td {
-                padding: 1rem;
-                vertical-align: middle;
-                border: none;
-            }
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .status-active {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-inactive {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .category-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .form-control {
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 0.75rem;
-            transition: all 0.3s ease;
-        }
-
-            .form-control:focus {
-                outline: none;
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-            .stat-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-            }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        .modal-content {
-            border-radius: 20px;
-            border: none;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border-radius: 20px 20px 0 0;
-            padding: 1.5rem 2rem;
-        }
-
-        .modal-title {
-            font-weight: 600;
-        }
-
-        .btn-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            opacity: 0.8;
-        }
-
-            .btn-close:hover {
-                opacity: 1;
-            }
-
-        .modal-body {
-            padding: 2rem;
-        }
-
-        .modal-footer {
-            padding: 1rem 2rem 2rem;
-            border-top: none;
-        }
-
-        .image-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 2px solid #e2e8f0;
-            margin-top: 0.5rem;
-        }
-
-        .pagination {
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .page-link {
-            border: none;
-            padding: 0.75rem 1rem;
-            margin: 0 0.25rem;
-            border-radius: 8px;
-            color: var(--primary-color);
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-            .page-link:hover {
-                background: var(--primary-color);
-                color: white;
-                transform: translateY(-2px);
-            }
-
-        .page-item.active .page-link {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-        }
-
-        media (max-width: 768px) {
-            .sidebar
-
-        {
-            transform: translateX(-100%);
-        }
-
-        .sidebar.show {
-            transform: translateX(0);
-        }
-
-        .main-content {
-            margin-left: 0;
-        }
-
-        .header-right {
-            display: none;
-        }
-
-        .search-input {
-            width: 200px;
-        }
-
-        }
-    </style>
-</head>
-<body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-crown"></i>
-                </div>
-                <div class="logo-text">Admin Pro</div>
-            </div>
-
-            <nav class="nav-menu">
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-users"></i>
-                        <span class="nav-text">Người dùng</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-shop"></i>
-                        <span class="nav-text">Cửa hàng</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link active">
-                        <i class="fa-solid fa-layer-group"></i>
-                        <span class="nav-text">Danh mục</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-box"></i>
-                        <span class="nav-text">Sản phẩm</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="nav-text">Đơn hàng</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="nav-text">Phân tích</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-file-alt"></i>
-                        <span class="nav-text">Nội dung</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-credit-card"></i>
-                        <span class="nav-text">Tài chính</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-cog"></i>
-                        <span class="nav-text">Cài đặt</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span class="nav-text text-light">Đăng xuất</span>
-                    </a>
-                </div>
-            </nav>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content" id="mainContent">
-            <!-- Header -->
-            <header class="header">
-                <div class="header-left">
-                    <button class="sidebar-toggle" onclick="toggleSidebar()">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <nav class="breadcrumb">
-                        <a href="#">Trang chủ</a> / <span>Quản lý danh mục</span>
-                    </nav>
-                </div>
-
-                <div class="header-right">
-                    <div class="search-box">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Tìm kiếm danh mục...">
-                    </div>
-
-                    <button class="notification-btn">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </button>
-
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="user-info">
-                            <div class="user-name">Admin</div>
-                            <div class="user-role">Quản trị viên</div>
-                        </div>
-                        <i class="fas fa-chevron-down" style="color: rgba(255,255,255,0.6); font-size: 12px;"></i>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Content Area -->
-            <div class="content-area">
-                <div class="page-header">
-                    <h1 class="page-title">Quản lý danh mục sản phẩm</h1>
-                    <p class="page-subtitle">Tổng quan và quản lý tất cả danh mục sản phẩm trong hệ thống</p>
-                </div>
-
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(45deg, #10b981, #059669);">
-                            <i class="fas fa-layer-group"></i>
-                        </div>
-                        <div class="stat-value">15</div>
-                        <div class="stat-label">Tổng danh mục</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(45deg, #3b82f6, #1d4ed8);">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="stat-value">12</div>
-                        <div class="stat-label">Đang hoạt động</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(45deg, #f59e0b, #d97706);">
-                            <i class="fas fa-pause-circle"></i>
-                        </div>
-                        <div class="stat-value">3</div>
-                        <div class="stat-label">Tạm dừng</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: linear-gradient(45deg, #8b5cf6, #7c3aed);">
-                            <i class="fas fa-box"></i>
-                        </div>
-                        <div class="stat-value">248</div>
-                        <div class="stat-label">Tổng sản phẩm</div>
-                    </div>
-                </div>
-
-                <!-- Category Management Card -->
-                <div class="content-card">
-                    <div class="card-header">
-                        <h3 class="card-title">Danh sách danh mục</h3>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                            <i class="fas fa-plus"></i> Thêm danh mục mới
-                        </button>
-                    </div>
-
-                    <div class="table-container">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Hình ảnh</th>
-                                    <th>Tên danh mục</th>
-                                    <th>Mô tả</th>
-                                    <th>Số sản phẩm</th>
-                                    <th>Trạng thái</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="categoryTableBody">
-                                <tr>
-                                    <td>1</td>
-                                    <td>
-                                        <img src="https://via.placeholder.com/50x50/667eea/white?text=T" alt="Áo thun" class="category-image">
-                                    </td>
-                                    <td>Áo thun</td>
-                                    <td>Áo thun nam nữ các loại</td>
-                                    <td>25</td>
-                                    <td><span class="status-badge status-active">Hoạt động</span></td>
-                                    <td>15/11/2024</td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm" onclick="editCategory(1)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteCategory(4)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Pagination -->
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Category Modal -->
-    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addCategoryModalLabel">
-                        <i class="fas fa-plus-circle"></i> Thêm danh mục mới
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addCategoryForm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="categoryName" class="form-label">Tên danh mục *</label>
-                                    <input type="text" class="form-control" id="categoryName" name="categoryName" required maxlength="100">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="categoryStatus" class="form-label">Trạng thái</label>
-                                    <select class="form-control" id="categoryStatus" name="isActive">
-                                        <option value="true">Hoạt động</option>
-                                        <option value="false">Tạm dừng</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="categoryDescription" class="form-label">Mô tả</label>
-                            <textarea class="form-control" id="categoryDescription" name="description" rows="3" maxlength="255"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="categoryImage" class="form-label">Hình ảnh danh mục</label>
-                            <input type="file" class="form-control" id="categoryImage" name="imageFile" accept="image/*" onchange="previewImage(this, 'imagePreview')">
-                            <img id="imagePreview" class="image-preview" style="display: none;" alt="Preview">
-                        </div>
-                        <div class="mb-3">
-                            <label for="imageUrl" class="form-label">Hoặc URL hình ảnh</label>
-                            <input type="url" class="form-control" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i> Hủy
-                    </button>
-                    <button type="button" class="btn btn-primary" onclick="saveCategory()">
-                        <i class="fas fa-save"></i> Lưu danh mục
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Category Modal -->
-    <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editCategoryModalLabel">
-                        <i class="fas fa-edit"></i> Chỉnh sửa danh mục
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editCategoryForm">
-                        <input type="hidden" id="editCategoryId" name="categoryId">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="editCategoryName" class="form-label">Tên danh mục *</label>
-                                    <input type="text" class="form-control" id="editCategoryName" name="categoryName" required maxlength="100">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="editCategoryStatus" class="form-label">Trạng thái</label>
-                                    <select class="form-control" id="editCategoryStatus" name="isActive">
-                                        <option value="true">Hoạt động</option>
-                                        <option value="false">Tạm dừng</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editCategoryDescription" class="form-label">Mô tả</label>
-                            <textarea class="form-control" id="editCategoryDescription" name="description" rows="3" maxlength="255"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editCategoryImage" class="form-label">Hình ảnh danh mục</label>
-                            <input type="file" class="form-control" id="editCategoryImage" name="imageFile" accept="image/*" onchange="previewImage(this, 'editImagePreview')">
-                            <img id="editImagePreview" class="image-preview" style="display: none;" alt="Preview">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editImageUrl" class="form-label">Hoặc URL hình ảnh</label>
-                            <input type="url" class="form-control" id="editImageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i> Hủy
-                    </button>
-                    <button type="button" class="btn btn-success" onclick="updateCategory()">
-                        <i class="fas fa-save"></i> Cập nhật
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="deleteCategoryModalLabel">
-                        <i class="fas fa-exclamation-triangle"></i> Xác nhận xóa
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Bạn có chắc chắn muốn xóa danh mục <strong id="deleteCategoryName"></strong>?</p>
-                    <p class="text-muted">Hành động này không thể hoàn tác. Tất cả sản phẩm trong danh mục này sẽ bị ảnh hưởng.</p>
-                    <input type="hidden" id="deleteCategoryId">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i> Hủy
-                    </button>
-                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">
-                        <i class="fas fa-trash"></i> Xóa danh mục
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Sample categories data
-        let categories = [
-            { id: 1, name: 'Áo thun', description: 'Áo thun nam nữ các loại', imageUrl: 'https://via.placeholder.com/50x50/667eea/white?text=T', isActive: true, createdAt: '2024-11-15', productCount: 25 },
-            { id: 2, name: 'Quần jeans', description: 'Quần jeans nam nữ thời trang', imageUrl: 'https://via.placeholder.com/50x50/764ba2/white?text=Q', isActive: true, createdAt: '2024-11-14', productCount: 18 },
-            { id: 3, name: 'Giày sneaker', description: 'Giày thể thao sneaker', imageUrl: 'https://via.placeholder.com/50x50/f093fb/white?text=G', isActive: true, createdAt: '2024-11-13', productCount: 32 },
-            { id: 4, name: 'Phụ kiện', description: 'Phụ kiện thời trang', imageUrl: 'https://via.placeholder.com/50x50/10b981/white?text=P', isActive: false, createdAt: '2024-11-12', productCount: 45 }
-        ];
-
-        // Toggle sidebar
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('mainContent');
-
-            sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('expanded');
-        }
-
-        // Preview image function
-        function previewImage(input, previewId) {
-            const preview = document.getElementById(previewId);
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // Save new category
-        function saveCategory() {
-            const form = document.getElementById('addCategoryForm');
-            const formData = new FormData(form);
-
-            const newCategory = {
-                id: Date.now(),
-                name: formData.get('categoryName'),
-                description: formData.get('description'),
-                imageUrl: formData.get('imageUrl') || 'https://via.placeholder.com/50x50/667eea/white?text=' + formData.get('categoryName').charAt(0),
-                isActive: formData.get('isActive') === 'true',
-                createdAt: new Date().toISOString().split('T')[0],
-                productCount: 0
-            };
-
-            categories.push(newCategory);
-            refreshCategoryTable();
-            updateStats();
-
-            // Close modal and reset form
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addCategoryModal'));
-            modal.hide();
-            form.reset();
-            document.getElementById('imagePreview').style.display = 'none';
-
-            showNotification('Thêm danh mục thành công!', 'success');
-        }
-
-        // Edit category
-        function editCategory(id) {
-            const category = categories.find(c => c.id === id);
-            if (!category) return;
-
-            document.getElementById('editCategoryId').value = category.id;
-            document.getElementById('editCategoryName').value = category.name;
-            document.getElementById('editCategoryDescription').value = category.description;
-            document.getElementById('editImageUrl').value = category.imageUrl;
-            document.getElementById('editCategoryStatus').value = category.isActive.toString();
-
-            const modal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
-            modal.show();
-        }
-
-        // Update category
-        function updateCategory() {
-            const form = document.getElementById('editCategoryForm');
-            const formData = new FormData(form);
-            const id = parseInt(formData.get('categoryId'));
-
-            const categoryIndex = categories.findIndex(c => c.id === id);
-            if (categoryIndex === -1) return;
-
-            categories[categoryIndex] = {
-                ...categories[categoryIndex],
-                name: formData.get('categoryName'),
-                description: formData.get('description'),
-                imageUrl: formData.get('imageUrl') || categories[categoryIndex].imageUrl,
-                isActive: formData.get('isActive') === 'true'
-            };
-
-            refreshCategoryTable();
-            updateStats();
-
-            // Close modal and reset form
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editCategoryModal'));
-            modal.hide();
-            form.reset();
-            document.getElementById('editImagePreview').style.display = 'none';
-
-            showNotification('Cập nhật danh mục thành công!', 'success');
-        }
-
-        // Delete category
-        function deleteCategory(id) {
-            const category = categories.find(c => c.id === id);
-            if (!category) return;
-
-            document.getElementById('deleteCategoryId').value = id;
-            document.getElementById('deleteCategoryName').textContent = category.name;
-
-            const modal = new bootstrap.Modal(document.getElementById('deleteCategoryModal'));
-            modal.show();
-        }
-
-        // Confirm delete
-        function confirmDelete() {
-            const id = parseInt(document.getElementById('deleteCategoryId').value);
-            categories = categories.filter(c => c.id !== id);
-
-            refreshCategoryTable();
-            updateStats();
-
-            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteCategoryModal'));
-            modal.hide();
-
-            showNotification('Xóa danh mục thành công!', 'success');
-        }
-
-        // Refresh category table
-        function refreshCategoryTable() {
-            const tbody = document.getElementById('categoryTableBody');
-            tbody.innerHTML = '';
-
-            categories.forEach(category => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${category.id}</td>
-                    <td>
-                        <img src="${category.imageUrl}" alt="${category.name}" class="category-image">
-                    </td>
-                    <td>${category.name}</td>
-                    <td>${category.description}</td>
-                    <td>${category.productCount}</td>
-                    <td>
-                        <span class="status-badge ${category.isActive ? 'status-active' : 'status-inactive'}">
-                            ${category.isActive ? 'Hoạt động' : 'Tạm dừng'}
-                        </span>
-                    </td>
-                    <td>${formatDate(category.createdAt)}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick="editCategory(${category.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteCategory(${category.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Update stats
-        function updateStats() {
-            const totalCategories = categories.length;
-            const activeCategories = categories.filter(c => c.isActive).length;
-            const inactiveCategories = categories.filter(c => !c.isActive).length;
-            const totalProducts = categories.reduce((sum, c) => sum + c.productCount, 0);
-
-            document.querySelector('.stats-grid .stat-card:nth-child(1) .stat-value').textContent = totalCategories;
-            document.querySelector('.stats-grid .stat-card:nth-child(2) .stat-value').textContent = activeCategories;
-            document.querySelector('.stats-grid .stat-card:nth-child(3) .stat-value').textContent = inactiveCategories;
-            document.querySelector('.stats-grid .stat-card:nth-child(4) .stat-value').textContent = totalProducts;
-        }
-
-        // Format date
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('vi-VN');
-        }
-
-        // Show notification
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-
-            document.body.appendChild(notification);
-
-            // Auto remove after 3 seconds
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 3000);
-        }
-
-        // Search functionality
-        document.querySelector('.search-input').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const filteredCategories = categories.filter(category =>
-                category.name.toLowerCase().includes(searchTerm) ||
-                category.description.toLowerCase().includes(searchTerm)
-            );
-
-            const tbody = document.getElementById('categoryTableBody');
-            tbody.innerHTML = '';
-
-            filteredCategories.forEach(category => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${category.id}</td>
-                    <td>
-                        <img src="${category.imageUrl}" alt="${category.name}" class="category-image">
-                    </td>
-                    <td>${category.name}</td>
-                    <td>${category.description}</td>
-                    <td>${category.productCount}</td>
-                    <td>
-                        <span class="status-badge ${category.isActive ? 'status-active' : 'status-inactive'}">
-                            ${category.isActive ? 'Hoạt động' : 'Tạm dừng'}
-                        </span>
-                    </td>
-                    <td>${formatDate(category.createdAt)}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick="editCategory(${category.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteCategory(${category.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        });
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            refreshCategoryTable();
-            updateStats();
-
-            // Auto-hide notifications after click
-            document.querySelector('.notification-btn').addEventListener('click', function() {
-                const badge = this.querySelector('.notification-badge');
-                setTimeout(() => {
-                    badge.style.display = 'none';
-                }, 200);
-            });
-        });
-
-        // Mobile responsive
-        window.addEventListener('resize', function() {
-            if (window.innerWidth < 768) {
-                document.getElementById('sidebar').classList.add('collapsed');
-                document.getElementById('mainContent').classList.add('expanded');
-            }
-        });
-    </script>
-</body>
-</html>
+﻿@model IEnumerable<CategoryProduct>
+
+@{
+	ViewData["Title"] = "Quản lý danh mục";
+	int currentPage = (int)ViewData["CurrentPage"];
+	int totalPages = (int)ViewData["TotalPages"];
+	int totalItems = (int)ViewData["TotalItems"];
+	int pageSize = (int)ViewData["PageSize"];
+	string currentFilter = ViewData["CurrentFilter"] as string ?? "";
+	bool? currentIsActive = ViewData["CurrentIsActive"] as bool?;
+}
+
+<div class="container-fluid">
+	<!-- Header Section -->
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<div>
+			<h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+			<p class="text-muted">Quản lý danh mục sản phẩm</p>
+		</div>
+		<button type="button" class="btn btn-primary" onclick="openCreateModal()">
+			<i class="fas fa-plus"></i> Thêm danh mục
+		</button>
+	</div>
+
+	<!-- Filter Section -->
+	<div class="card mb-4">
+		<div class="card-body">
+			<form method="get" class="row g-3">
+				<div class="col-md-4">
+					<label class="form-label">Tìm kiếm</label>
+					<input type="text" name="searchTerm" class="form-control" value="@currentFilter" placeholder="Nhập tên danh mục...">
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Trạng thái</label>
+					<select name="isActive" class="form-select">
+						<option value="">Tất cả</option>
+						<option value="true" selected="@(currentIsActive == true)">Hoạt động</option>
+						<option value="false" selected="@(currentIsActive == false)">Không hoạt động</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label class="form-label">Số lượng/trang</label>
+					<select name="pageSize" class="form-select">
+						<option value="5" selected="@(pageSize == 5)">5</option>
+						<option value="10" selected="@(pageSize == 10)">10</option>
+						<option value="15" selected="@(pageSize == 15)">15</option>
+					</select>
+				</div>
+				<div class="col-md-3 d-flex align-items-end">
+					<button type="submit" class="btn btn-outline-primary me-2">
+						<i class="fas fa-search"></i> Tìm kiếm
+					</button>
+					<a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+						<i class="fas fa-refresh"></i> Làm mới
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Table Section -->
+	<div class="card">
+		<div class="card-header">
+			<h6 class="m-0 font-weight-bold text-primary">
+				Danh sách danh mục (@totalItems kết quả)
+			</h6>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead class="table-light">
+						<tr>
+							<th>Hình ảnh</th>
+							<th>Tên danh mục</th>
+							<th>Mô tả</th>
+							<th>Trạng thái</th>
+							<th>Ngày tạo</th>
+							<th>Số sản phẩm</th>
+							<th>Thao tác</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
+						{
+							<tr>
+								<td>
+									@if (!string.IsNullOrEmpty(item.ImageUrl))
+									{
+										<img src="@item.ImageUrl" alt="@item.CategoryName" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+									}
+									else
+									{
+										<div class="bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; border-radius: 8px;">
+											<i class="fas fa-image text-muted"></i>
+										</div>
+									}
+								</td>
+								<td>
+									<strong>@item.CategoryName</strong>
+								</td>
+								<td>
+									<span class="text-muted">@(item.Description?.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description)</span>
+								</td>
+								<td>
+									<span class="badge @(item.IsActive ? "bg-success" : "bg-danger")">
+										@(item.IsActive ? "Hoạt động" : "Không hoạt động")
+									</span>
+								</td>
+								<td>
+									@item.CreatedAt.ToString("dd/MM/yyyy")
+								</td>
+								<td>
+									<span class="badge bg-info">@(item.Products?.Count ?? 0)</span>
+								</td>
+								<td>
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-sm btn-outline-info" onclick="openDetailsModal(@item.CategoryId)" title="Xem chi tiết">
+											<i class="fas fa-eye"></i>
+										</button>
+										<button type="button" class="btn btn-sm btn-outline-primary" onclick="openEditModal(@item.CategoryId)" title="Chỉnh sửa">
+											<i class="fas fa-edit"></i>
+										</button>
+										<button type="button" class="btn btn-sm @(item.IsActive ? "btn-outline-warning" : "btn-outline-success")" onclick="toggleStatus(@item.CategoryId)" title="@(item.IsActive ? "Vô hiệu hóa" : "Kích hoạt")">
+											<i class="fas @(item.IsActive ? "fa-eye-slash" : "fa-eye")"></i>
+										</button>
+										<button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCategory(@item.CategoryId)" title="Xóa">
+											<i class="fas fa-trash"></i>
+										</button>
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+
+			<!-- Pagination -->
+			@if (totalPages > 1)
+			{
+				<nav class="mt-4">
+					<ul class="pagination justify-content-center">
+						@if (currentPage > 1)
+						{
+							<li class="page-item">
+								<a class="page-link" href="@Url.Action("Index", new { page = 1, searchTerm = currentFilter, isActive = currentIsActive, pageSize = pageSize })">Đầu</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1, searchTerm = currentFilter, isActive = currentIsActive, pageSize = pageSize })">Trước</a>
+							</li>
+						}
+
+						@{
+							int startPage = Math.Max(1, currentPage - 2);
+							int endPage = Math.Min(totalPages, currentPage + 2);
+						}
+
+						@for (int i = startPage; i <= endPage; i++)
+						{
+							<li class="page-item @(i == currentPage ? "active" : "")">
+								<a class="page-link" href="@Url.Action("Index", new { page = i, searchTerm = currentFilter, isActive = currentIsActive, pageSize = pageSize })">@i</a>
+							</li>
+						}
+
+						@if (currentPage < totalPages)
+						{
+							<li class="page-item">
+								<a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1, searchTerm = currentFilter, isActive = currentIsActive, pageSize = pageSize })">Sau</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="@Url.Action("Index", new { page = totalPages, searchTerm = currentFilter, isActive = currentIsActive, pageSize = pageSize })">Cuối</a>
+							</li>
+						}
+					</ul>
+				</nav>
+			}
+		</div>
+	</div>
+</div>
+
+<!-- Modal Container -->
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" id="modalContent">
+			<!-- Content will be loaded here -->
+		</div>
+	</div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" id="detailsModalContent">
+			<!-- Content will be loaded here -->
+		</div>
+	</div>
+</div>
+
+
+<script>
+	// Toast notification function
+	function showToast(message, type = 'success') {
+		const toastHtml = `
+			<div class="toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+				<div class="d-flex">
+					<div class="toast-body">
+						<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}
+					</div>
+					<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+				</div>
+			</div>
+		`;
+
+		// Create toast container if it doesn't exist
+		if (!document.getElementById('toastContainer')) {
+			const container = document.createElement('div');
+			container.id = 'toastContainer';
+			container.className = 'toast-container position-fixed top-0 end-0 p-3';
+			container.style.zIndex = '1060';
+			document.body.appendChild(container);
+		}
+
+		const toastContainer = document.getElementById('toastContainer');
+		toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+
+		const toastElement = toastContainer.lastElementChild;
+		const toast = new bootstrap.Toast(toastElement);
+		toast.show();
+
+		// Remove toast element after it's hidden
+		toastElement.addEventListener('hidden.bs.toast', function () {
+			toastElement.remove();
+		});
+	}
+
+	// Open create modal
+	function openCreateModal() {
+		fetch('@Url.Action("Create")')
+			.then(response => response.text())
+			.then(html => {
+				document.getElementById('modalContent').innerHTML = html;
+				const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
+				modal.show();
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				showToast('Có lỗi xảy ra khi tải form', 'error');
+			});
+	}
+
+	// Open edit modal
+	function openEditModal(id) {
+		fetch(`@Url.Action("Edit")/${id}`)
+			.then(response => response.text())
+			.then(html => {
+				document.getElementById('modalContent').innerHTML = html;
+				const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
+				modal.show();
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				showToast('Có lỗi xảy ra khi tải form', 'error');
+			});
+	}
+
+	// Open details modal
+	function openDetailsModal(id) {
+		fetch(`@Url.Action("Details")/${id}`)
+			.then(response => response.text())
+			.then(html => {
+				document.getElementById('detailsModalContent').innerHTML = html;
+				const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+				modal.show();
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				showToast('Có lỗi xảy ra khi tải chi tiết', 'error');
+			});
+	}
+
+	// Submit form
+	function submitForm(formId) {
+		const form = document.getElementById(formId);
+		const formData = new FormData(form);
+
+		fetch(form.action, {
+			method: 'POST',
+			body: formData,
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest'
+			}
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (data.success) {
+				showToast(data.message);
+				bootstrap.Modal.getInstance(document.getElementById('categoryModal')).hide();
+				location.reload(); // Reload page to show changes
+			} else {
+				showToast(data.message || 'Có lỗi xảy ra', 'error');
+			}
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			showToast('Có lỗi xảy ra khi xử lý', 'error');
+		});
+	}
+
+	// Toggle status
+	function toggleStatus(id) {
+		if (confirm('Bạn có chắc chắn muốn thay đổi trạng thái danh mục này?')) {
+			const formData = new FormData();
+			formData.append('__RequestVerificationToken', document.querySelector('input[name="__RequestVerificationToken"]').value);
+
+			fetch(`@Url.Action("ToggleStatus")/${id}`, {
+				method: 'POST',
+				body: formData
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					showToast(data.message);
+					location.reload();
+				} else {
+					showToast(data.message || 'Có lỗi xảy ra', 'error');
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				showToast('Có lỗi xảy ra khi xử lý', 'error');
+			});
+		}
+	}
+
+	// Delete category
+	function deleteCategory(id) {
+		if (confirm('Bạn có chắc chắn muốn xóa danh mục này?\nLưu ý: Chỉ có thể xóa danh mục không có sản phẩm.')) {
+			const formData = new FormData();
+			formData.append('__RequestVerificationToken', document.querySelector('input[name="__RequestVerificationToken"]').value);
+
+			fetch(`@Url.Action("Delete")/${id}`, {
+				method: 'POST',
+				body: formData
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					showToast(data.message);
+					location.reload();
+				} else {
+					showToast(data.message || 'Có lỗi xảy ra', 'error');
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				showToast('Có lỗi xảy ra khi xử lý', 'error');
+			});
+		}
+	}
+</script>
+
+
+@Html.AntiForgeryToken()

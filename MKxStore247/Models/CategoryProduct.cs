@@ -12,16 +12,16 @@ namespace MKxStore247.Models
         public string CategoryName { get; set; }
 
         [MaxLength(255)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [MaxLength(255)]
-        public string ImageUrl { get; set; } // Ảnh đại diện danh mục
+        public string? ImageUrl { get; set; } // Ảnh đại diện danh mục
 
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Product>? Products { get; set; }
     }
 
 }

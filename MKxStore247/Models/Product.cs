@@ -18,7 +18,7 @@ namespace MKxStore247.Models
         [MaxLength(100)]
         public string ProductName { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public decimal Price { get; set; }  
@@ -37,6 +37,10 @@ namespace MKxStore247.Models
         public int SoldQuantity { get; set; } = 0;   // Tổng số lượng đã bán
         [Required]
         public int TotalImported { get; set; } = 0;  // Tổng số đã nhập kho
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; } = null;
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
         public virtual ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
         public virtual ICollection<ProductOption> ProductOptions { get; set; } = new List<ProductOption>();
 

@@ -1,0 +1,162 @@
+﻿@model CategoryProduct
+
+@{
+    bool isEdit = Model.CategoryId > 0;
+    string title = isEdit ? "Chỉnh sửa danh mục" : "Thêm danh mục mới";
+    string action = isEdit ? "Edit" : "Create";
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">
+        <i class="fas @(isEdit ? "fa-edit" : "fa-plus") text-primary"></i>
+        @title
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form id="categoryForm" action="@Url.Action(action)" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    
+    @if (isEdit)
+    {
+        <input type="hidden" asp-for="CategoryId" />
+        <input type="hidden" asp-for="ImageUrl" />
+        <input type="hidden" asp-for="CreatedAt" />
+    }
+
+    <div class="modal-body">
+        <div class="row">
+            <!-- Cột bên trái - Hình ảnh -->
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Hình ảnh danh mục</label>
+                    <div class="text-center">
+                        <div class="mb-3">
+                            <div id="imagePreview" class="border rounded p-3" style="min-height: 150px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
+                                @if (isEdit && !string.IsNullOrEmpty(Model.ImageUrl))
+                                {
+                                    <img src="@Model.ImageUrl" alt="Current Image" class="img-fluid rounded" style="max-height: 120px; max-width: 100%;" />
+                                }
+                                else
+                                {
+                                    <div class="text-muted">
+                                        <i class="fas fa-image fa-3x mb-2"></i>
+                                        <div>Chưa có hình ảnh</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <input type="file" name="imageFile" class="form-control" accept="image/*" onchange="previewImage(this)" />
+                        <small class="form-text text-muted">Chọn file ảnh (JPG, PNG, GIF)</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột bên phải - Thông tin danh mục -->
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label asp-for="CategoryName" class="form-label">
+                        Tên danh mục <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="CategoryName" class="form-control" placeholder="Nhập tên danh mục" required />
+                    <span asp-validation-for="CategoryName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Nhập mô tả cho danh mục" maxlength="255"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                    <small class="form-text text-muted">Tối đa 255 ký tự</small>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsActive" class="form-check-label">
+                            Kích hoạt danh mục
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông tin hướng dẫn -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Lưu ý:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Tên danh mục không được để trống</li>
+                        <li>Mô tả tối đa 255 ký tự</li>
+                        <li>Hình ảnh nên có kích thước phù hợp để hiển thị tốt</li>
+                        <li>Danh mục được kích hoạt sẽ hiển thị trên website</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i> Hủy
+        </button>
+        <button type="button" class="btn btn-primary" onclick="submitForm('categoryForm')">
+            <i class="fas @(isEdit ? "fa-save" : "fa-plus")"></i>
+            @(isEdit ? "Cập nhật" : "Thêm mới")
+        </button>
+    </div>
+</form>
+
+<script>
+    function previewImage(input) {
+        const preview = document.getElementById('imagePreview');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="img-fluid rounded" style="max-height: 120px; max-width: 100%;" />`;
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            // Reset về trạng thái ban đầu nếu không có file
+            preview.innerHTML = `
+                <div class="text-muted">
+                    <i class="fas fa-image fa-3x mb-2"></i>
+                    <div>Chưa có hình ảnh</div>
+                </div>
+            `;
+        }
+    }
+
+    // Auto-focus vào input tên danh mục
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryNameInput = document.querySelector('input[name="CategoryName"]');
+        if (categoryNameInput) {
+            setTimeout(() => categoryNameInput.focus(), 500);
+        }
+    });
+
+    // Hàm submit form (cần được định nghĩa ở nơi khác hoặc thêm vào đây)
+    function submitForm(formId) {
+        const form = document.getElementById(formId);
+        if (form.checkValidity()) {
+            form.submit();
+        } else {
+            form.reportValidity();
+        }
+    }
+
+    // Validation client-side
+    document.getElementById('categoryForm').addEventListener('submit', function(e) {
+        const categoryName = document.querySelector('input[name="CategoryName"]').value.trim();
+        if (!categoryName) {
+            e.preventDefault();
+            alert('Vui lòng nhập tên danh mục!');
+            return false;
+        }
+        return true;
+    });
+</script>

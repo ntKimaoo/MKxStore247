@@ -1,0 +1,554 @@
+﻿
+<style>
+	.shop-banner {
+		height: 300px;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		position: relative;
+		overflow: hidden;
+		border-radius: 15px;
+		margin-bottom: 30px;
+	}
+
+	.shop-banner-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		cursor: move;
+		transition: transform 0.3s ease;
+	}
+
+	.shop-banner-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.4);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: white;
+		font-size: 1.2rem;
+		border-radius: 15px;
+	}
+
+	.shop-avatar {
+		width: 120px;
+		height: 120px;
+		border-radius: 50%;
+		border: 5px solid white;
+		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+		margin-top: -60px;
+		position: relative;
+		z-index: 10;
+		background: #f8f9fa;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+	}
+
+		.shop-avatar img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			border-radius: 50%;
+		}
+
+	.shop-info {
+		background: white;
+		border-radius: 15px;
+		padding: 30px;
+		box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+		margin-bottom: 30px;
+	}
+
+	.form-control, .form-select {
+		border-radius: 10px;
+		padding: 12px 15px;
+		border: 2px solid #e9ecef;
+		transition: all 0.3s ease;
+	}
+
+		.form-control:focus, .form-select:focus {
+			border-color: #667eea;
+			box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+		}
+
+	.upload-area {
+		border: 2px dashed #dee2e6;
+		border-radius: 10px;
+		padding: 30px;
+		text-align: center;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		background: #f8f9fa;
+	}
+
+		.upload-area:hover {
+			border-color: #667eea;
+			background: #f0f2ff;
+		}
+
+		.upload-area.dragover {
+			border-color: #667eea;
+			background: #f0f2ff;
+		}
+
+	.image-position-controls {
+		display: none;
+		background: rgba(0, 0, 0, 0.8);
+		color: white;
+		padding: 10px;
+		border-radius: 10px;
+		margin-top: 10px;
+	}
+
+		.image-position-controls.show {
+			display: block;
+		}
+
+	.position-slider {
+		margin: 5px 0;
+	}
+
+	.shop-preview {
+		background: #f8f9fa;
+		border-radius: 15px;
+		padding: 20px;
+		margin-bottom: 30px;
+	}
+
+	.preview-banner {
+		height: 200px;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		border-radius: 10px;
+		position: relative;
+		overflow: hidden;
+		margin-bottom: 20px;
+	}
+
+	.preview-avatar {
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		border: 3px solid white;
+		margin-top: -40px;
+		background: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 10;
+	}
+
+	.category-badge {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		padding: 5px 15px;
+		border-radius: 20px;
+		font-size: 0.9rem;
+		display: inline-block;
+		margin: 5px 5px 5px 0;
+	}
+
+	.stats-card {
+		background: white;
+		border-radius: 10px;
+		padding: 20px;
+		text-align: center;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		margin-bottom: 20px;
+	}
+
+	.stats-number {
+		font-size: 2rem;
+		font-weight: bold;
+		color: #667eea;
+	}
+
+	.drag-handle {
+		cursor: move;
+		color: #667eea;
+	}
+
+	.cropper-container {
+		position: relative;
+		background: #f8f9fa;
+		border-radius: 10px;
+		overflow: hidden;
+	}
+</style>
+<body>
+	<div class="container mt-4">
+		<div class="row">
+			<div class="col-lg-8">
+				<!-- Shop Banner Section -->
+				<div class="shop-banner" id="shopBanner">
+					<div class="shop-banner-overlay" id="bannerOverlay">
+						<div class="text-center">
+							<i class="fas fa-camera fa-3x mb-3"></i>
+							<h4>Click để tải ảnh bìa cửa hàng</h4>
+							<p>Kích thước khuyến nghị: 1200x300px</p>
+						</div>
+					</div>
+					<input type="file" id="bannerInput" accept="image/*" style="display: none;">
+					<img id="bannerImage" class="shop-banner-image" style="display: none;">
+				</div>
+
+				<!-- Image Position Controls -->
+				<div class="image-position-controls" id="bannerControls">
+					<div class="d-flex align-items-center justify-content-between">
+						<strong>Điều chỉnh vị trí ảnh bìa:</strong>
+						<button type="button" class="btn btn-sm btn-outline-light" onclick="resetBannerPosition()">
+							<i class="fas fa-undo"></i> Reset
+						</button>
+					</div>
+					<div class="mt-2">
+						<label>Vị trí ngang:</label>
+						<input type="range" class="form-range position-slider" id="bannerX" min="-100" max="100" value="0">
+					</div>
+					<div class="mt-2">
+						<label>Vị trí dọc:</label>
+						<input type="range" class="form-range position-slider" id="bannerY" min="-100" max="100" value="0">
+					</div>
+					<div class="mt-2">
+						<label>Zoom:</label>
+						<input type="range" class="form-range position-slider" id="bannerZoom" min="100" max="200" value="100">
+					</div>
+				</div>
+
+				<!-- Shop Info Form -->
+				<div class="shop-info">
+					<form id="createShopForm" method="post" enctype="multipart/form-data">
+						<div class="row">
+							<div class="col-md-3 text-center">
+								<div class="shop-avatar" onclick="document.getElementById('avatarInput').click()">
+									<img id="avatarImage" style="display: none;">
+									<div id="avatarPlaceholder">
+										<i class="fas fa-store fa-2x text-muted"></i>
+									</div>
+								</div>
+								<input type="file" id="avatarInput" accept="image/*" style="display: none;">
+								<small class="text-muted">Click để thay đổi logo</small>
+							</div>
+							<div class="col-md-9">
+								<div class="mb-3">
+									<label for="shopName" class="form-label">Tên cửa hàng <span class="text-danger">*</span></label>
+									<input type="text" class="form-control" id="shopName" name="ShopName" required
+										   placeholder="Nhập tên cửa hàng của bạn">
+								</div>
+								<div class="mb-3">
+									<label for="shopDescription" class="form-label">Mô tả cửa hàng</label>
+									<textarea class="form-control" id="shopDescription" name="ShopDescription" rows="3"
+											  placeholder="Mô tả ngắn về cửa hàng của bạn..."></textarea>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="mb-3">
+									<label for="shopCategory" class="form-label">Danh mục chính <span class="text-danger">*</span></label>
+									<select class="form-select" id="shopCategory" name="ShopCategory" required>
+										<option value="">Chọn danh mục</option>
+										<option value="fashion">Thời trang</option>
+										<option value="electronics">Điện tử</option>
+										<option value="books">Sách</option>
+										<option value="home">Nhà cửa</option>
+										<option value="beauty">Làm đẹp</option>
+										<option value="sports">Thể thao</option>
+										<option value="food">Thực phẩm</option>
+										<option value="other">Khác</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="mb-3">
+									<label for="shopPhone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+									<input type="tel" class="form-control" id="shopPhone" name="ShopPhone" required
+										   placeholder="Nhập số điện thoại">
+								</div>
+							</div>
+
+						</div>
+						<div class="mb-3">
+							<label for="shopEmail" class="form-label">Địa chỉ Email <span class="text-danger">*</span></label>
+							<input type="text" class="form-control" id="shopEmail" name="Email" required
+								   placeholder="Nhập địa chỉ Email cửa hàng">
+						</div>
+						<div class="mb-3">
+							<label for="shopAddress" class="form-label">Địa chỉ cửa hàng <span class="text-danger">*</span></label>
+							<input type="text" class="form-control" id="shopAddress" name="ShopAddress" required
+								   placeholder="Nhập địa chỉ cửa hàng">
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="mb-3">
+									<label for="shopCity" class="form-label">Thành phố <span class="text-danger">*</span></label>
+									<select class="form-select" id="shopCity" name="ShopCity" required>
+										<option value="">Chọn thành phố</option>
+										<option value="hanoi">Hà Nội</option>
+										<option value="hcm">TP. Hồ Chí Minh</option>
+										<option value="danang">Đà Nẵng</option>
+										<option value="haiphong">Hải Phòng</option>
+										<option value="cantho">Cần Thơ</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="mb-3">
+									<label for="shopSlug" class="form-label">Đường dẫn cửa hàng <span class="text-danger">*</span></label>
+									<div class="input-group">
+										<span class="input-group-text">mkxstore247.com/shop/</span>
+										<input type="text" class="form-control" id="shopSlug" name="ShopSlug" required>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="d-flex justify-content-between">
+							<button type="button" class="btn btn-outline-secondary">
+								<i class="fas fa-arrow-left"></i> Quay lại
+							</button>
+							<button type="submit" class="btn btn-primary">
+								<i class="fas fa-store"></i> Tạo cửa hàng
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- Preview Section -->
+			<div class="col-lg-4">
+				<div class="shop-preview">
+					<h5 class="mb-3">
+						<i class="fas fa-eye"></i> Xem trước cửa hàng
+					</h5>
+
+					<!-- Preview Banner -->
+					<div class="preview-banner" id="previewBanner">
+						<div class="d-flex align-items-center justify-content-center h-100 text-white">
+							<i class="fas fa-image fa-2x"></i>
+						</div>
+					</div>
+
+					<!-- Preview Avatar -->
+					<div class="d-flex align-items-center mb-3">
+						<div class="preview-avatar me-3" id="previewAvatar">
+							<i class="fas fa-store text-muted"></i>
+						</div>
+						<div>
+							<h6 class="mb-1" id="previewName">Tên cửa hàng</h6>
+							<small class="text-muted" id="previewCategory">Danh mục</small>
+						</div>
+					</div>
+
+					<!-- Preview Stats -->
+					<div class="row">
+						<div class="col-4">
+							<div class="stats-card">
+								<div class="stats-number">0</div>
+								<small class="text-muted">Sản phẩm</small>
+							</div>
+						</div>
+						<div class="col-4">
+							<div class="stats-card">
+								<div class="stats-number">0</div>
+								<small class="text-muted">Đơn hàng</small>
+							</div>
+						</div>
+						<div class="col-4">
+							<div class="stats-card">
+								<div class="stats-number">5.0</div>
+								<small class="text-muted">Đánh giá</small>
+							</div>
+						</div>
+					</div>
+
+					<!-- Preview Info -->
+					<div class="mt-3">
+						<p class="mb-2" id="previewDescription">
+							<i class="fas fa-info-circle text-muted me-2"></i>
+							Mô tả cửa hàng sẽ hiển thị tại đây
+						</p>
+						<p class="mb-2" id="previewAddress">
+							<i class="fas fa-map-marker-alt text-muted me-2"></i>
+							Địa chỉ cửa hàng
+						</p>
+						<p class="mb-2" id="previewPhone">
+							<i class="fas fa-phone text-muted me-2"></i>
+							Số điện thoại
+						</p>
+						<p class="mb-2" id="previewEmail">
+							<i class="fas fa-envelope text-muted me-2"></i>
+							Email
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		// Banner image handling
+		const bannerInput = document.getElementById('bannerInput');
+		const bannerImage = document.getElementById('bannerImage');
+		const bannerOverlay = document.getElementById('bannerOverlay');
+		const bannerControls = document.getElementById('bannerControls');
+		const previewBanner = document.getElementById('previewBanner');
+
+		// Avatar handling
+		const avatarInput = document.getElementById('avatarInput');
+		const avatarImage = document.getElementById('avatarImage');
+		const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+		const previewAvatar = document.getElementById('previewAvatar');
+
+		// Banner click to upload
+		document.getElementById('shopBanner').addEventListener('click', function() {
+			bannerInput.click();
+		});
+
+		// Banner file input change
+		bannerInput.addEventListener('change', function(e) {
+			const file = e.target.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					bannerImage.src = e.target.result;
+					bannerImage.style.display = 'block';
+					bannerOverlay.style.display = 'none';
+					bannerControls.classList.add('show');
+
+					// Update preview
+					previewBanner.style.backgroundImage = `url(${e.target.result})`;
+					previewBanner.style.backgroundSize = 'cover';
+					previewBanner.style.backgroundPosition = 'center';
+					previewBanner.innerHTML = '';
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+
+		// Avatar file input change
+		avatarInput.addEventListener('change', function(e) {
+			const file = e.target.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					avatarImage.src = e.target.result;
+					avatarImage.style.display = 'block';
+					avatarPlaceholder.style.display = 'none';
+
+					// Update preview
+					previewAvatar.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+
+		// Banner position controls
+		document.getElementById('bannerX').addEventListener('input', updateBannerPosition);
+		document.getElementById('bannerY').addEventListener('input', updateBannerPosition);
+		document.getElementById('bannerZoom').addEventListener('input', updateBannerPosition);
+
+		function updateBannerPosition() {
+			const x = document.getElementById('bannerX').value;
+			const y = document.getElementById('bannerY').value;
+			const zoom = document.getElementById('bannerZoom').value;
+
+			const transform = `translate(${x}px, ${y}px) scale(${zoom / 100})`;
+			bannerImage.style.transform = transform;
+
+			// Update preview
+			previewBanner.style.backgroundPosition = `${50 + x/2}% ${50 + y/2}%`;
+			previewBanner.style.backgroundSize = `${zoom}%`;
+		}
+
+		function resetBannerPosition() {
+			document.getElementById('bannerX').value = 0;
+			document.getElementById('bannerY').value = 0;
+			document.getElementById('bannerZoom').value = 100;
+			updateBannerPosition();
+		}
+
+		// Live preview updates
+		document.getElementById('shopName').addEventListener('input', function() {
+			document.getElementById('previewName').textContent = this.value || 'Tên cửa hàng';
+		});
+
+		document.getElementById('shopDescription').addEventListener('input', function() {
+			const previewDesc = document.getElementById('previewDescription');
+			previewDesc.innerHTML = `<i class="fas fa-info-circle text-muted me-2"></i>${this.value || 'Mô tả cửa hàng sẽ hiển thị tại đây'}`;
+		});
+
+		document.getElementById('shopCategory').addEventListener('change', function() {
+			const categoryNames = {
+				'fashion': 'Thời trang',
+				'electronics': 'Điện tử',
+				'books': 'Sách',
+				'home': 'Nhà cửa',
+				'beauty': 'Làm đẹp',
+				'sports': 'Thể thao',
+				'food': 'Thực phẩm',
+				'other': 'Khác'
+			};
+			document.getElementById('previewCategory').textContent = categoryNames[this.value] || 'Danh mục';
+		});
+
+		document.getElementById('shopAddress').addEventListener('input', function() {
+			document.getElementById('previewAddress').innerHTML = `<i class="fas fa-map-marker-alt text-muted me-2"></i>${this.value || 'Địa chỉ cửa hàng'}`;
+		});
+
+		document.getElementById('shopPhone').addEventListener('input', function() {
+			document.getElementById('previewPhone').innerHTML = `<i class="fas fa-phone text-muted me-2"></i>${this.value || 'Số điện thoại'}`;
+		});
+
+		document.getElementById('shopEmail').addEventListener('input', function() {
+			document.getElementById('previewEmail').innerHTML = `<i class="fas fa-envelope text-muted me-2"></i>${this.value || 'Số điện thoại'}`;
+		});
+
+
+		// Form submission
+		document.getElementById('createShopForm').addEventListener('submit', function(e) {
+			e.preventDefault();
+
+			// Show loading
+			const submitBtn = this.querySelector('button[type="submit"]');
+			const originalText = submitBtn.innerHTML;
+			submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo cửa hàng...';
+			submitBtn.disabled = true;
+
+			// Simulate API call
+			setTimeout(() => {
+				alert('Cửa hàng đã được tạo thành công!');
+				// window.location.href = '/Shop/Dashboard';
+			}, 2000);
+		});
+
+		// Drag and drop for banner
+		const shopBanner = document.getElementById('shopBanner');
+
+		shopBanner.addEventListener('dragover', function(e) {
+			e.preventDefault();
+			this.classList.add('dragover');
+		});
+
+		shopBanner.addEventListener('dragleave', function(e) {
+			e.preventDefault();
+			this.classList.remove('dragover');
+		});
+
+		shopBanner.addEventListener('drop', function(e) {
+			e.preventDefault();
+			this.classList.remove('dragover');
+
+			const files = e.dataTransfer.files;
+			if (files.length > 0 && files[0].type.startsWith('image/')) {
+				bannerInput.files = files;
+				bannerInput.dispatchEvent(new Event('change'));
+			}
+		});
+	</script>
+</body>

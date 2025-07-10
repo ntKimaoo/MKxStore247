@@ -7,7 +7,57 @@
 @if (SignInManager.IsSignedIn(User))
 {
 	<button class="nav-icon-btn"><i class="bi bi-bell"></i></button>
-	<button class="nav-icon-btn"><i class="bi bi-chat-dots"></i></button>
+	<div class="dropdown">
+		<button class="btn btn-outline-secondary me-2" id="shopDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+			<i class="bi bi-chat-dots"></i>
+			<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+				3
+			</span>
+		</button>
+
+		<!-- Shop Bar Dropdown -->
+		<ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="shopDropdown" style="min-width: 300px;">
+			<h6 class="dropdown-header">Shop Items</h6>
+			<li class="dropdown-item">Item 1</li>
+			<li class="dropdown-item">Item 2</li>
+			<li class="dropdown-item">Item 3</li>
+		</ul>
+	</div>
+	<div class="dropdown">
+		<button class="btn btn-outline-secondary dropdown-toggle me-2" id="shopDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+			<i class="bi bi-shop"></i>
+			<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+				0
+			</span>
+		</button>
+
+		<!-- Shop Bar Dropdown -->
+		<ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="shopDropdown" style="min-width: 300px;">
+			<div class="text-center">
+				<li><a class="dropdown-item" href="#" onclick="manageShop()">
+					<i class="fas fa-cog"></i> Quản lí cửa hàng
+				</a></li>
+				<li><a class="dropdown-item" href="#" onclick="manageProducts()">
+					<i class="fas fa-box"></i> Quản lí sản phẩm
+				</a></li>
+				<li><a class="dropdown-item" href="#" onclick="manageOrders()">
+					<i class="fas fa-shopping-cart"></i> Quản lí đơn hàng
+				</a></li>
+				<li><a class="dropdown-item" href="#" onclick="viewStatistics()">
+					<i class="fas fa-chart-bar"></i> Thống kê bán hàng
+				</a></li>
+				<li><hr class="dropdown-divider"></li>
+				<li><a class="dropdown-item" href="#" onclick="shopSettings()">
+					<i class="fas fa-sliders-h"></i> Cài đặt cửa hàng
+				</a></li>
+				<p class="mb-3">Chưa tồn tại cửa hàng. Mở cửa hàng để bán sản phẩm ngay bây giờ!</p>
+				<a href="#" class="btn btn-primary btn-sm" onclick="openShop()">
+					<i class="fas fa-store"></i> Mở cửa hàng ngay!
+				</a>
+			</div>
+
+		</ul>
+	</div>
 	<a id="manage" class="nav-icon-btn text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><i class="bi bi-person-circle"></i></a>
 	<form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
 		<button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
@@ -18,3 +68,8 @@ else
 	<a class="btn btn-dangtin ms-2" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
 	<a class="btn btn-dangtin ms-2" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
 }
+<script>
+	function openShop() {
+		window.location.href = '@Url.Action("Create", "Shop")';
+	}
+</script>

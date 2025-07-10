@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\css\\AdminLayout.css"
     },
     {
+      "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\CategoryProductManage.css",
+      "PackagePath": "staticwebassets\\css\\CategoryProductManage.css"
+    },
+    {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\css\\FirstLogin.css",
       "PackagePath": "staticwebassets\\css\\FirstLogin.css"
     },
@@ -35,6 +39,14 @@
     {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\images\\categories\\0f82b313-9395-46fb-9ebc-dbd60bd5a79d.png",
+      "PackagePath": "staticwebassets\\images\\categories\\0f82b313-9395-46fb-9ebc-dbd60bd5a79d.png"
+    },
+    {
+      "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\images\\categories\\11f42b5c-345c-440d-ba52-9c302069b4c1.png",
+      "PackagePath": "staticwebassets\\images\\categories\\11f42b5c-345c-440d-ba52-9c302069b4c1.png"
     },
     {
       "Id": "E:\\c#project\\MKxStore247\\MKxStore247\\wwwroot\\js\\UserManagement.js",

@@ -1,4 +1,5 @@
 wwwroot\css\AdminLayout.css
+wwwroot\css\CategoryProductManage.css
 wwwroot\css\FirstLogin.css
 wwwroot\css\HomeStyle.css
 wwwroot\css\Layout.css
@@ -6,6 +7,8 @@ wwwroot\css\ManageUsers.css
 wwwroot\css\Register.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
+wwwroot\images\categories\0f82b313-9395-46fb-9ebc-dbd60bd5a79d.png
+wwwroot\images\categories\11f42b5c-345c-440d-ba52-9c302069b4c1.png
 wwwroot\js\site.js
 wwwroot\js\UserManagement.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css
