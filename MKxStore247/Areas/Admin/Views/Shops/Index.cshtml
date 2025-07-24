@@ -1,0 +1,406 @@
+﻿@model IEnumerable<MKxStore247.Models.Shop>
+@{
+    ViewData["Title"] = "Quản lý Shop";
+}
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-store me-2"></i>Quản lý Shop
+            </h1>
+            <p class="mb-0 text-muted">Quản lý tất cả các shop trong hệ thống</p>
+        </div>
+        <a asp-action="" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Tạo Shop Mới
+        </a>
+    </div>
+
+    <!-- Alerts -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filters & Search -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm shop...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="statusFilter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="active">Đang hoạt động</option>
+                        <option value="inactive">Tạm dừng</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">Tất cả danh mục</option>
+                        @foreach (var category in ViewBag.Categories ?? new List<object>())
+                        {
+                            <!-- Categories will be populated via AJAX or ViewBag -->
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                        <i class="fas fa-times me-1"></i>Xóa bộ lọc
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Tổng số Shop
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalShops">
+                                @Model.Count()
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-store fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Đang hoạt động
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeShops">
+                                @Model.Count(s => s.IsActive)
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Tạm dừng
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="inactiveShops">
+                                @Model.Count(s => !s.IsActive)
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-pause-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Mới hôm nay
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="todayShops">
+                                @Model.Count(s => s.CreatedAt.Date == DateTime.Today)
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shops Table -->
+    <div class="card shadow">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách Shop</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow">
+                    <a class="dropdown-item" href="#" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Xuất Excel
+                    </a>
+                    <a class="dropdown-item" href="#" onclick="printTable()">
+                        <i class="fas fa-print fa-sm fa-fw mr-2 text-gray-400"></i>
+                        In danh sách
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="shopsTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Shop</th>
+                            <th scope="col">Chủ shop</th>
+                            <th scope="col">Danh mục</th>
+                            <th scope="col">Địa chỉ</th>
+                            <th scope="col">Trạng thái</th>
+                            <th scope="col">Ngày tạo</th>
+                            <th scope="col">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                        }
+                        @foreach (var shop in Model)
+                        {
+                            <tr data-shop-id="@shop.ShopId" class="shop-row">
+                                <td>@index</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="shop-avatar me-3">
+                                            @if (!string.IsNullOrEmpty(shop.Avatar))
+                                            {
+                                                <img src="@shop.Avatar" alt="@shop.ShopName" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                            }
+                                            else
+                                            {
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    @shop.ShopName.Substring(0, 1).ToUpper()
+                                                </div>
+                                            }
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">@shop.ShopName</div>
+                                            <small class="text-muted">@shop.ShopUrl</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="fw-medium">@shop.Owner?.UserName</div>
+                                        <small class="text-muted">@shop.Owner?.Email</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        @(shop.MainCategoryProduct?.CategoryName ?? "Chưa phân loại")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div>
+                                        <small>@shop.Address</small><br>
+                                        <small class="text-muted">@shop.City</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (shop.IsActive)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle me-1"></i>Hoạt động
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-pause-circle me-1"></i>Tạm dừng
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <small>@shop.CreatedAt.ToString("dd/MM/yyyy")</small><br>
+                                    <small class="text-muted">@shop.CreatedAt.ToString("HH:mm")</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="" asp-route-id="@shop.ShopId" class="btn btn-sm btn-outline-info" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="" asp-route-id="@shop.ShopId" class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-action="ToggleStatus" asp-route-id="@shop.ShopId" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm @(shop.IsActive ? "btn-outline-warning" : "btn-outline-success")"
+                                                    title="@(shop.IsActive ? "Tạm dừng" : "Kích hoạt")"
+                                                    onclick="return confirm('@(shop.IsActive ? "Bạn có chắc muốn tạm dừng shop này?" : "Bạn có chắc muốn kích hoạt shop này?")')">
+                                                <i class="fas @(shop.IsActive ? "fa-pause" : "fa-play")"></i>
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" title="Xóa"
+                                                onclick="confirmDelete(@shop.ShopId, '@shop.ShopName')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa shop <strong id="shopNameToDelete"></strong>?</p>
+                <p class="text-danger"><small>Hành động này không thể hoàn tác!</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('.shop-row');
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    });
+
+    // Status filter
+    document.getElementById('statusFilter').addEventListener('change', function() {
+        const filter = this.value;
+        const rows = document.querySelectorAll('.shop-row');
+
+        rows.forEach(row => {
+            if (!filter) {
+                row.style.display = '';
+                return;
+            }
+
+            const statusBadge = row.querySelector('.badge');
+            const isActive = statusBadge.textContent.includes('Hoạt động');
+
+            if ((filter === 'active' && isActive) || (filter === 'inactive' && !isActive)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    // Clear filters
+    function clearFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('categoryFilter').value = '';
+
+        document.querySelectorAll('.shop-row').forEach(row => {
+            row.style.display = '';
+        });
+    }
+
+    // Delete confirmation
+    function confirmDelete(shopId, shopName) {
+        document.getElementById('shopNameToDelete').textContent = shopName;
+        document.getElementById('deleteForm').action = 'Url.Action("")/' + shopId;
+
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+
+    // Export functions (placeholder)
+    function exportToExcel() {
+        alert('Chức năng xuất Excel sẽ được triển khai sau');
+    }
+
+    function printTable() {
+        window.print();
+    }
+</script>
+
+<style>
+    .border-left-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+
+    .shop-avatar img {
+        transition: transform 0.2s;
+    }
+
+        .shop-avatar img:hover {
+            transform: scale(1.1);
+        }
+
+    .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+    }
+
+    .btn-group .btn {
+        margin-right: 2px;
+    }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+</style>

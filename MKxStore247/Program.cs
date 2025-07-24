@@ -5,6 +5,7 @@ using MKxStore247.Data;
 using MKxStore247.Models;
 using MKxStore247.Models.HelperModel;
 using MKxStore247.Services;
+using MKxStore247.Services.Implementation;
 using MKxStore247.Services.Interface;
 
 namespace MKxStore247
@@ -33,7 +34,8 @@ namespace MKxStore247
             builder.Services.AddControllersWithViews();
             builder.Services.Configure<CloudinarySetting>(builder.Configuration.GetSection("CloudinarySetting"));
             builder.Services.AddScoped<IUserApplicationService, UserApplicationService>();
-
+            builder.Services.AddScoped<ICategoryProductService, CategoryProductService>();
+            builder.Services.AddScoped<IShopService, ShopService>();
 
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())

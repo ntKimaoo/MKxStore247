@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MKxStore247.Models;
+using MKxStore247.Services.Interface;
 
 namespace MKxStore247.Controllers
 {
@@ -10,11 +11,15 @@ namespace MKxStore247.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<UserApplication> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public HomeController(ILogger<HomeController> logger, UserManager<UserApplication> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly IShopService _shopService;
+        private readonly ICategoryProductService _categoryProductService;
+        public HomeController(ILogger<HomeController> logger, UserManager<UserApplication> userManager, RoleManager<IdentityRole> roleManager, IShopService shopService, ICategoryProductService categoryProductService)
         {
             _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
+            _shopService = shopService;
+            _categoryProductService = categoryProductService;
         }
 
         public async Task<IActionResult> Index()
@@ -34,7 +39,8 @@ namespace MKxStore247.Controllers
                     return Redirect("/Admin");
                 }
             }
-            
+            var categories = await _categoryProductService.GetAllCategoryAsync();
+            ViewBag.listCates = categories;
             return View();
         }
 

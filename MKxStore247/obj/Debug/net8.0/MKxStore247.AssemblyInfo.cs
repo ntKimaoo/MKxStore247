@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MKxStore247")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93d3208f7e528ca8c73d153d715e3e423f4bc924")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19632bad0b4dde5f9718bb57eb0232708dd9fbc2")]
 [assembly: System.Reflection.AssemblyProductAttribute("MKxStore247")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MKxStore247")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

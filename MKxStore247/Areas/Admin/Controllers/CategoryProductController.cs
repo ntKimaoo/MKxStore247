@@ -220,7 +220,7 @@ namespace MKxStore247.Areas.Admin.Controllers
                 }
 
                 // Kiểm tra xem danh mục có sản phẩm không
-                var hasProducts = await _context.Product.AnyAsync(p => p.CategoryId == id);
+                var hasProducts = await _context.Products.AnyAsync(p => p.CategoryId == id);
                 if (hasProducts)
                 {
                     return Json(new { success = false, message = "Không thể xóa danh mục đang có sản phẩm" });

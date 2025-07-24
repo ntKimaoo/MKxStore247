@@ -16,8 +16,11 @@
         public int Status { get; set; } = 1;
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
+        public int MainCategoryId { get; set; }
+        public virtual CategoryProduct MainCategoryProduct { get; set; }
         public virtual UserApplication Owner { get; set; }
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }

@@ -1,0 +1,303 @@
+﻿@* Views/SellerShop/Index.cshtml - Dashboard Shop *@
+@model MKxStore247.Models.Shop
+
+@{
+    ViewData["Title"] = "Dashboard Shop";
+    var statistics = ViewBag.Statistics as MKxStore247.Services.Interface.ShopStatistics;
+}
+
+<div class="container-fluid">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Shop Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            @if (!string.IsNullOrEmpty(Model.Avatar))   
+                            {
+                                <img src="@Model.Avatar" class="rounded-circle img-fluid" style="width: 80px; height: 80px; object-fit: cover;" alt="Avatar">
+                            }
+                            else
+                            {
+                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-store text-white fs-2"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-8">
+                            <h3 class="mb-1">@Model.ShopName</h3>
+                            <p class="text-muted mb-1">
+                                <i class="fas fa-link me-1"></i>@Model.ShopUrl
+                            </p>
+                            <p class="mb-0">@Model.Description</p>
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt me-1"></i>@Model.City - @Model.Address
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <div class="mb-2">
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-success fs-6">
+                                        <i class="fas fa-check-circle me-1"></i>Đang hoạt động
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger fs-6">
+                                        <i class="fas fa-pause-circle me-1"></i>Tạm dừng
+                                    </span>
+                                }
+                            </div>
+                            <div class="btn-group-vertical d-grid gap-2">
+                                <a href="/seller/shop/settings" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-cog me-1"></i>Cài đặt
+                                </a>
+                                <a href="/seller/shop/edit" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                                </a>
+                                <form method="post" action="/seller/shop/toggle-status" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-warning btn-sm w-100"
+                                            onclick="return confirm('Bạn có chắc muốn @(Model.IsActive ? "tạm dừng" : "kích hoạt") shop không?')">
+                                        <i class="fas fa-toggle-@(Model.IsActive ? "off" : "on") me-1"></i>
+                                        @(Model.IsActive ? "Tạm dừng" : "Kích hoạt")
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">@statistics.TotalProducts</h4>
+                            <p class="card-text">Tổng sản phẩm</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-box fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-primary bg-opacity-10">
+                    <a href="/seller/products" class="text-white text-decoration-none">
+                        <small>Xem tất cả <i class="fas fa-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">@statistics.ActiveProducts</h4>
+                            <p class="card-text">Sản phẩm đang bán</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-success bg-opacity-10">
+                    <a href="/seller/products?status=active" class="text-white text-decoration-none">
+                        <small>Quản lý <i class="fas fa-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">@statistics.TotalOrders</h4>
+                            <p class="card-text">Tổng đơn hàng</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-shopping-cart fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-info bg-opacity-10">
+                    <a href="/seller/orders" class="text-white text-decoration-none">
+                        <small>Xem chi tiết <i class="fas fa-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">@statistics.PendingOrders</h4>
+                            <p class="card-text">Đơn chờ xử lý</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-clock fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-warning bg-opacity-10">
+                    <a href="/seller/orders?status=pending" class="text-white text-decoration-none">
+                        <small>Xử lý ngay <i class="fas fa-arrow-right"></i></small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Chart -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-line me-2"></i>Doanh thu 7 ngày gần đây
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tasks me-2"></i>Hoạt động gần đây
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">2 giờ trước</small>
+                                <br>Đơn hàng mới #DH001
+                            </div>
+                            <span class="badge bg-success">Mới</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">5 giờ trước</small>
+                                <br>Sản phẩm được đánh giá
+                            </div>
+                            <span class="badge bg-info">5★</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">1 ngày trước</small>
+                                <br>Cập nhật sản phẩm
+                            </div>
+                            <span class="badge bg-secondary">Cập nhật</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt me-2"></i>Thao tác nhanh
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="/seller/products/create" class="btn btn-primary w-100 mb-2">
+                                <i class="fas fa-plus me-2"></i>Thêm sản phẩm
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/seller/orders" class="btn btn-info w-100 mb-2">
+                                <i class="fas fa-shopping-cart me-2"></i>Quản lý đơn hàng
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/seller/reports" class="btn btn-success w-100 mb-2">
+                                <i class="fas fa-chart-bar me-2"></i>Báo cáo
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/seller/promotions" class="btn btn-warning w-100 mb-2">
+                                <i class="fas fa-percent me-2"></i>Khuyến mãi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Revenue Chart
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: [12000000, 15000000, 8000000, 20000000, 18000000, 22000000, 25000000],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('vi-VN') + ' đ';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

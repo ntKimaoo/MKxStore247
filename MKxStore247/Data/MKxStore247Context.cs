@@ -42,6 +42,10 @@ public class MKxStore247Context : IdentityDbContext<UserApplication>
                 .WithMany(u => u.Shops)
                 .HasForeignKey(s => s.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(s => s.MainCategoryProduct)
+                .WithMany(u => u.MainShopCategory)
+                .HasForeignKey(s => s.MainCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
         builder.Entity<Product>(entity =>
         {
@@ -102,7 +106,7 @@ public class MKxStore247Context : IdentityDbContext<UserApplication>
     public DbSet<Address> Address { get; set; }
     public DbSet<Shop> Shop { get; set; }
     public DbSet<CategoryProduct> CategoryProduct { get; set; }
-    public DbSet<Product> Product { get; set; }
+    public DbSet<Product> Products { get; set; }
     public DbSet<StockImport> StockImport { get; set; }
     public DbSet<CartItem> CartItem { get; set; }
     public DbSet<OrderDetail> OrderDetail { get; set; }

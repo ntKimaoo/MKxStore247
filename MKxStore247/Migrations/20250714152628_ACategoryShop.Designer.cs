@@ -4,6 +4,7 @@ using MKxStore247.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MKxStore247.Migrations
 {
     [DbContext(typeof(MKxStore247Context))]
-    partial class MKxStore247ContextModelSnapshot : ModelSnapshot
+    [Migration("20250714152628_ACategoryShop")]
+    partial class ACategoryShop
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -673,12 +676,16 @@ namespace MKxStore247.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("MainCategoryId")
+                    b.Property<string>("MainCategoryId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("MainCategoryProductCategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("OwnerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -702,7 +709,7 @@ namespace MKxStore247.Migrations
 
                     b.HasIndex("MainCategoryId");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("MainCategoryProductCategoryId");
 
                     b.ToTable("Shop");
                 });
@@ -1249,16 +1256,16 @@ namespace MKxStore247.Migrations
 
             modelBuilder.Entity("MKxStore247.Models.Shop", b =>
                 {
-                    b.HasOne("MKxStore247.Models.CategoryProduct", "MainCategoryProduct")
-                        .WithMany("MainShopCategory")
+                    b.HasOne("MKxStore247.Models.UserApplication", "Owner")
+                        .WithMany("Shops")
                         .HasForeignKey("MainCategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MKxStore247.Models.UserApplication", "Owner")
-                        .WithMany("Shops")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("MKxStore247.Models.CategoryProduct", "MainCategoryProduct")
+                        .WithMany()
+                        .HasForeignKey("MainCategoryProductCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("MainCategoryProduct");
@@ -1354,8 +1361,6 @@ namespace MKxStore247.Migrations
 
             modelBuilder.Entity("MKxStore247.Models.CategoryProduct", b =>
                 {
-                    b.Navigation("MainShopCategory");
-
                     b.Navigation("Products");
                 });
 

@@ -22,6 +22,7 @@ namespace MKxStore247.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public virtual ICollection<Product>? Products { get; set; }
+        public virtual ICollection<Shop> MainShopCategory { get; set; }
     }
 
 }

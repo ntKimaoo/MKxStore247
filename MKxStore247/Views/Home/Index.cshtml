@@ -4,7 +4,7 @@
 }
 @inject SignInManager<UserApplication> SignInManager
 @inject UserManager<UserApplication> UserManager
-<link href="css/HomeStyle.css" rel="stylesheet"/>
+<link href="css/HomeStyle.css" rel="stylesheet" />
 <style>
 	.body-content {
 		max-width: 1080px; /* hoặc 768px, 600px tùy ý */
@@ -23,10 +23,11 @@
 		var role = await UserManager.GetRolesAsync(user);
 		roles = string.Join(", ", role).Trim();
 	}
+	var listCates = ViewBag.listCates;
 }
 @if (roles == "Admin")
 {
-	
+
 }
 else
 {
@@ -37,14 +38,12 @@ else
 		<nav class="nav-categories">
 			<div class="container">
 				<div class="d-flex flex-wrap gap-2">
-					<a href="#" class="nav-link">Xe cộ</a>
-					<a href="#" class="nav-link">Bất động sản</a>
-					<a href="#" class="nav-link">Đồ điện tử</a>
-					<a href="#" class="nav-link">Thời trang</a>
-					<a href="#" class="nav-link">Đồ gia dụng</a>
-					<a href="#" class="nav-link">Việc làm</a>
-					<a href="#" class="nav-link">Dịch vụ</a>
-					<a href="#" class="nav-link">Thú cưng</a>
+					@{
+						foreach (var item in listCates)
+						{
+							<a href="#" class="nav-link">@item.CategoryName</a>
+						}
+					}
 				</div>
 			</div>
 		</nav>
@@ -84,62 +83,25 @@ else
 			<div class="container">
 				<h2 class="section-title text-center">Danh mục nổi bật</h2>
 				<div class="category-grid">
-					<a href="#" class="category-item">
-						<div class="category-icon">
-							<i class="fas fa-car"></i>
-						</div>
-						<div>Xe cộ</div>
-					</a>
-					<a href="#" class="category-item">
-						<div class="category-icon">
-							<i class="fas fa-home"></i>
-						</div>
-						<div>Bất động sản</div>
-					</a>
-					<a href="#" class="category-item">
-						<div class="category-icon">
-							<i class="fas fa-mobile-alt"></i>
-						</div>
-						<div>Điện thoại</div>
-					</a>
-					<a href="#" class="category-item">
-						<div class="category-icon">
-							<i class="fas fa-laptop"></i>
-						</div>
-						<div>Máy tính</div>
-					</a>
-					<a href="#" class="category-item">
-						<div class="category-icon">
-							<i class="fas fa-tshirt"></i>
-						</div>
-						<div>Thời trang</div>
-					</a>
-					<a href="#" class="category-item">
-						<div class="category-icon">
-							<i class="fas fa-couch"></i>
-						</div>
-						<div>Nội thất</div>
-					</a>
-					<a href="#" class="category-item">
-						<div class="category-icon">
-							<i class="fas fa-briefcase"></i>
-						</div>
-						<div>Việc làm</div>
-					</a>
-					<a href="#" class="category-item">
-						<div class="category-icon">
-							<i class="fas fa-paw"></i>
-						</div>
-						<div>Thú cưng</div>
-					</a>
+					@{
+						foreach (var item in listCates)
+						{
+							<a href="#" class="category-item">
+								<div class="category-icon">
+									<i class="@item.ImageUrl"></i>
+								</div>
+								<div>@item.CategoryName</div>
+							</a>
+						}
+					}
 				</div>
 			</div>
 		</section>
 
-		<!-- Featured Products -->
+		<!-- San pham moi nhat -->
 		<section class="custom-section py-5 bg-white shadow">
 			<div class="container">
-				<h2 class="section-title">Sản phẩm nổi bật</h2>
+				<h2 class="section-title">Sản phẩm mới</h2>
 				<div class="row g-4">
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<div class="product-card">
@@ -154,32 +116,14 @@ else
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-card">
-							<img src="https://via.placeholder.com/300x200?text=Honda+Vision" alt="Honda Vision"
-								 class="product-image">
-							<div class="product-info">
-								<div class="product-price">28.000.000 đ</div>
-								<div class="product-title">Honda Vision 2023</div>
-								<div class="product-location">
-									<i class="fas fa-map-marker-alt me-1"></i>TP. HCM
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-card">
-							<img src="https://via.placeholder.com/300x200?text=MacBook" alt="MacBook"
-								 class="product-image">
-							<div class="product-info">
-								<div class="product-price">35.000.000 đ</div>
-								<div class="product-title">MacBook Pro M3 16 inch</div>
-								<div class="product-location">
-									<i class="fas fa-map-marker-alt me-1"></i>Đà Nẵng
-								</div>
-							</div>
-						</div>
-					</div>
+				</div>
+			</div>
+		</section>
+		<!-- San pham noi bat -->
+		<section class="custom-section py-5 bg-white shadow mt-3">
+			<div class="container">
+				<h2 class="section-title">Sản phẩm nổi bật</h2>
+				<div class="row g-4">
 					<div class="col-lg-3 col-md-4 col-sm-6">
 						<div class="product-card">
 							<img src="https://via.placeholder.com/300x200?text=Căn+hộ" alt="Căn hộ"
@@ -197,11 +141,10 @@ else
 			</div>
 		</section>
 	</section>
+
 }
 
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
 	// JavaScript cho các tương tác
 	document.addEventListener('DOMContentLoaded', function () {

@@ -26,51 +26,61 @@ namespace MKxStore247.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string Username { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
+            [Display(Name = "Họ và tên")]
+            [StringLength(100, ErrorMessage = "Họ tên không được vượt quá {1} ký tự.")]
+            public string FullName { get; set; }
+
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Số điện thoại")]
             public string PhoneNumber { get; set; }
+
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; }
+
+            [Display(Name = "Giới tính")]
+            public string Gender { get; set; }
+
+            [Display(Name = "Ngày sinh")]
+            [DataType(DataType.Date)]
+            public DateTime? DateOfBirth { get; set; }
+
+            [Display(Name = "Địa chỉ")]
+            [StringLength(200, ErrorMessage = "Địa chỉ không được vượt quá {1} ký tự.")]
+            public string Address { get; set; }
+
+            [Display(Name = "Avatar URL")]
+            [Url(ErrorMessage = "URL avatar không hợp lệ.")]
+            public string AvatarUrl { get; set; }
         }
 
         private async Task LoadAsync(UserApplication user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var email = await _userManager.GetEmailAsync(user);
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Email = email,
+                FullName = user.FullName,
+                Gender = user.Gender,
+                DateOfBirth = user.DateOfBirth,
+                Address = user.Address,
+                AvatarUrl = user.AvatarUrl
             };
         }
 
@@ -100,19 +110,78 @@ namespace MKxStore247.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            // Update phone number
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = "Lỗi không mong muốn khi cập nhật số điện thoại.";
+                    return RedirectToPage();
+                }
+            }
+
+            // Update email
+            var email = await _userManager.GetEmailAsync(user);
+            if (Input.Email != email)
+            {
+                var setEmailResult = await _userManager.SetEmailAsync(user, Input.Email);
+                if (!setEmailResult.Succeeded)
+                {
+                    StatusMessage = "Lỗi không mong muốn khi cập nhật email.";
+                    return RedirectToPage();
+                }
+            }
+
+            // Update custom properties
+            bool needsUpdate = false;
+
+            if (user.FullName != Input.FullName)
+            {
+                user.FullName = Input.FullName;
+                needsUpdate = true;
+            }
+
+            if (user.Gender != Input.Gender)
+            {
+                user.Gender = Input.Gender;
+                needsUpdate = true;
+            }
+
+            if (user.DateOfBirth != Input.DateOfBirth)
+            {
+                user.DateOfBirth = Input.DateOfBirth;
+                needsUpdate = true;
+            }
+
+            if (user.Address != Input.Address)
+            {
+                user.Address = Input.Address;
+                needsUpdate = true;
+            }
+
+            if (user.AvatarUrl != Input.AvatarUrl)
+            {
+                user.AvatarUrl = Input.AvatarUrl;
+                needsUpdate = true;
+            }
+
+            if (needsUpdate)
+            {
+                user.UpdatedAt = DateTime.Now;
+                user.UpdatedBy = user.Id; // hoặc lấy từ current user context
+
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    StatusMessage = "Lỗi không mong muốn khi cập nhật thông tin cá nhân.";
                     return RedirectToPage();
                 }
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Thông tin cá nhân đã được cập nhật thành công.";
             return RedirectToPage();
         }
     }
