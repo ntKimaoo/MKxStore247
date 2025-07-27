@@ -39,8 +39,9 @@ namespace MKxStore247.Controllers
             {
                 var ownerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var shop = await _shopService.GetShopsByOwnerAsync(ownerId);
-               
+                var listCategories = await _categoryProduct.GetAllCategoryAsync();
                 var statistics = await _shopService.GetShopStatisticsAsync(shop.ShopId);
+                ViewBag.listCategory = listCategories;
                 ViewBag.Statistics = statistics;
 
                 return View(shop);

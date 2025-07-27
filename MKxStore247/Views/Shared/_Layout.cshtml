@@ -17,39 +17,39 @@
 
 	<style>
 		.navbar-chotot {
-		background-color: #FAA03F;
+			background-color: #FAA03F;
 		}
 
 		.navbar-logo {
-		font-weight: bold;
-		font-size: 24px;
-		color: white;
-		text-transform: uppercase;
-		text-decoration: none;
+			font-weight: bold;
+			font-size: 24px;
+			color: white;
+			text-transform: uppercase;
+			text-decoration: none;
 		}
 
 		.nav-icon-btn {
-		background: none;
-		border: none;
-		font-size: 20px;
-		color: #333;
-		margin-right: 10px;
+			background: none;
+			border: none;
+			font-size: 20px;
+			color: #333;
+			margin-right: 10px;
 		}
 
 		.btn-dangtin {
-		background-color: #ff5722;
-		color: white;
-		font-weight: bold;
-		border-radius: 4px;
-		padding: 8px 16px;
+			background-color: #ff5722;
+			color: white;
+			font-weight: bold;
+			border-radius: 4px;
+			padding: 8px 16px;
 		}
 
-		.btn-dangtin:hover {
-		background-color: #e64a19;
-		}
+			.btn-dangtin:hover {
+				background-color: #e64a19;
+			}
 
 		.form-control:focus {
-		box-shadow: none;
+			box-shadow: none;
 		}
 	</style>
 </head>
@@ -95,16 +95,15 @@
 					</select>
 
 					<!-- Tìm kiếm -->
-					<div class="input-group me-3" style="width: 700px;">
-						<input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm trên Store 24/7">
-						<button class="btn btn-dark"><i class="bi bi-search"></i></button>
-					</div>
-
+					<form asp-controller="Product" asp-action="Search" class="input-group me-3" style="width: 30%">
+						<input type="text" name="searchTerm" class="form-control" placeholder="Tìm kiếm sản phẩm trên Store 24/7">
+						<button type="submit" class="btn btn-dark"><i class="bi bi-search"></i></button>
+					</form>
 					@await Html.PartialAsync("_LoginPartial", null, new ViewDataDictionary(ViewData)
-					{
-						["Shop"] = shop,
-						["IsHadShop"] = isHadShop
-					})
+{
+	["Shop"] = shop,
+	["IsHadShop"] = isHadShop
+})
 				</div>
 			</nav>
 

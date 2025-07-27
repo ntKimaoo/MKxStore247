@@ -1,0 +1,421 @@
+﻿@model Product
+
+@{
+    ViewData["Title"] = Model.ProductName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Product Images Section -->
+        <div class="col-md-6">
+            <div class="product-images">
+                @if (Model.Images != null && Model.Images.Any())
+                {
+                    var mainImage = Model.Images.FirstOrDefault(i => i.IsMain && i.IsActive);
+                    var otherImages = Model.Images.Where(i => !i.IsMain && i.IsActive).ToList();
+
+                    <!-- Main Image -->
+                    <div class="main-image-container mb-3">
+                        <img id="mainProductImage"
+                             src="@(mainImage?.ImageUrl ?? "/images/no-image.jpg")"
+                             alt="@Model.ProductName"
+                             class="img-fluid rounded shadow-sm main-product-image">
+                    </div>
+
+                    <!-- Thumbnail Images -->
+                    @if (otherImages.Any() || Model.Images.Count() > 1)
+                    {
+                        <div class="thumbnail-images d-flex gap-2 flex-wrap">
+                            @if (mainImage != null)
+                            {
+                                <img src="@mainImage.ImageUrl"
+                                     alt="@Model.ProductName"
+                                     class="thumbnail-img active"
+                                     onclick="changeMainImage('@mainImage.ImageUrl')">
+                            }
+                            @foreach (var image in otherImages)
+                            {
+                                <img src="@image.ImageUrl"
+                                     alt="@Model.ProductName"
+                                     class="thumbnail-img"
+                                     onclick="changeMainImage('@image.ImageUrl')">
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="main-image-container">
+                        <img src="/images/no-image.jpg"
+                             alt="No image available"
+                             class="img-fluid rounded shadow-sm main-product-image">
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Product Information Section -->
+        <div class="col-md-6">
+            <div class="product-info">
+                <!-- Product Name -->
+                <h1 class="product-title mb-3">@Model.ProductName</h1>
+
+                <!-- Shop Info -->
+                <div class="shop-info mb-3 p-3 bg-light rounded">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-store me-2 text-primary"></i>
+                        <div>
+                            <h6 class="mb-0">@Model.Shop.ShopName</h6>
+                            <small class="text-muted">@Model.Shop.Address, @Model.Shop.City</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category -->
+                <div class="category-info mb-3">
+                    <span class="badge bg-secondary fs-6">
+                        <i class="@Model.Category.ImageUrl me-1"></i>
+                        @Model.Category.CategoryName
+                    </span>
+                </div>
+
+                <!-- Price -->
+                <div class="price-section mb-4">
+                    <h2 class="price text-danger mb-0">
+                        @Model.Price.ToString("N0") VNĐ
+                    </h2>
+                </div>
+
+                <!-- Stock Information -->
+                <div class="stock-info mb-4">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="text-center p-2 bg-success text-white rounded">
+                                <div class="fw-bold">@Model.StockQuantity</div>
+                                <small>Còn lại</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center p-2 bg-info text-white rounded">
+                                <div class="fw-bold">@Model.SoldQuantity</div>
+                                <small>Đã bán</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center p-2 bg-warning text-dark rounded">
+                                <div class="fw-bold">@Model.TotalImported</div>
+                                <small>Tổng nhập</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Options -->
+                @if (Model.ProductOptions != null && Model.ProductOptions.Any())
+                {
+                    <div class="product-options mb-4">
+                        @foreach (var option in Model.ProductOptions)
+                        {
+                            <div class="option-group mb-3">
+                                <label class="form-label fw-bold">@option.OptionName:</label>
+                                <div class="option-values d-flex flex-wrap gap-2">
+	                                @foreach (var value in option.Values)
+	                                {
+		                                <button type="button"
+		                                        class="btn btn-outline-primary option-btn"
+		                                        data-option="@option.OptionName"
+		                                        data-value="@value.Value"
+		                                        @(value.StockQuantity > 0 ? "" : "disabled")>
+			                                @value.Value
+			                                @if (value.StockQuantity <= 0)
+			                                {
+				                                <small class="text-muted">(Hết hàng)</small>
+			                                }
+			                                else
+			                                {
+				                                <small class="text-muted">(@value.StockQuantity)</small>
+			                                }
+		                                </button>
+	                                }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Quantity Selector -->
+                <div class="quantity-section mb-4">
+                    <label class="form-label fw-bold">Số lượng:</label>
+                    <div class="input-group" style="width: 150px;">
+                        <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
+                        <input type="number" class="form-control text-center" id="quantity" value="1" min="1" max="@Model.StockQuantity">
+                        <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons mb-4">
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button class="btn btn-danger btn-lg flex-fill" onclick="buyNow()">
+                            <i class="fas fa-bolt me-2"></i>Mua ngay
+                        </button>
+                        <button class="btn btn-outline-primary btn-lg flex-fill" onclick="addToCart()">
+                            <i class="fas fa-cart-plus me-2"></i>Thêm vào giỏ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contact Shop -->
+                <div class="contact-shop">
+                    <div class="d-flex gap-2">
+                        <a href="tel:@Model.Shop.Phone" class="btn btn-success flex-fill">
+                            <i class="fas fa-phone me-2"></i>@Model.Shop?.Phone
+                        </a>
+                        <a href="mailto:@Model.Shop.Email" class="btn btn-info flex-fill">
+                            <i class="fas fa-envelope me-2"></i>@Model.Shop?.Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Description -->
+    @if (!string.IsNullOrEmpty(Model.Description))
+    {
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Mô tả sản phẩm
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@Html.Raw(Model.Description.Replace("\n", "<br>"))</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Reviews Section -->
+    @if (Model.Ratings != null && Model.Ratings.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-star me-2 text-warning"></i>
+                            Đánh giá sản phẩm (@Model.Ratings.Count())
+                        </h5>
+                        <div class="rating-summary">
+                            @{
+                                var avgRating = Model.Ratings.Average(r => r.Stars);
+                            }
+                            <span class="avg-rating me-2">
+                                <strong>@avgRating.ToString("F1")</strong>/5
+                            </span>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="fas fa-star @(i <= avgRating ? "text-warning" : "text-muted")"></i>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var rating in Model.Ratings.OrderByDescending(r => r.CreatedAt))
+                        {
+                            <div class="review-item mb-3 pb-3 border-bottom">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="review-stars">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="fas fa-star @(i <= rating.Stars ? "text-warning" : "text-muted") me-1"></i>
+                                        }
+                                    </div>
+                                    <small class="text-muted">@rating.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                                </div>
+                                <p class="review-comment mb-0">@rating.Comment</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Stock Import History (Admin only - you can add authorization check) -->
+    @if (Model.StockImports != null && Model.StockImports.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-boxes me-2"></i>Lịch sử nhập hàng
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Ngày nhập</th>
+                                        <th>Số lượng</th>
+                                        <th>Ghi chú</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var import in Model.StockImports.OrderByDescending(s => s.ImportedAt))
+                                    {
+                                        <tr>
+                                            <td>@import.ImportedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td><span class="badge bg-success">+@import.Quantity</span></td>
+                                            <td>@import.Note</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .main-product-image {
+        width: 100%;
+        max-height: 500px;
+        object-fit: cover;
+    }
+
+    .thumbnail-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .thumbnail-img:hover,
+        .thumbnail-img.active {
+            border-color: #007bff;
+            transform: scale(1.05);
+        }
+
+    .product-title {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .price {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .option-btn {
+        min-width: 80px;
+        transition: all 0.3s ease;
+    }
+
+        .option-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+    .review-item:last-child {
+        border-bottom: none !important;
+    }
+
+    .avg-rating {
+        font-size: 1.2rem;
+    }
+
+</style>
+
+<script>
+    function changeMainImage(imageUrl) {
+        document.getElementById('mainProductImage').src = imageUrl;
+
+        // Update active thumbnail
+        document.querySelectorAll('.thumbnail-img').forEach(img => {
+            img.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    }
+
+    function increaseQuantity() {
+        var quantityInput = document.getElementById('quantity');
+        var currentValue = parseInt(quantityInput.value);
+        var maxValue = parseInt(quantityInput.max);
+
+        if (currentValue < maxValue) {
+            quantityInput.value = currentValue + 1;
+        }
+    }
+
+    function decreaseQuantity() {
+        var quantityInput = document.getElementById('quantity');
+        var currentValue = parseInt(quantityInput.value);
+
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    }
+
+    // Option selection
+    document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from other buttons in the same option group
+            const optionName = this.dataset.option;
+            document.querySelectorAll(`[data-option="${optionName}"]`).forEach(b => {
+                b.classList.remove('active');
+            });
+
+            // Add active class to clicked button
+            this.classList.add('active');
+        });
+    });
+
+    function addToCart() {
+        // Get selected options
+        const selectedOptions = {};
+        document.querySelectorAll('.option-btn.active').forEach(btn => {
+            selectedOptions[btn.dataset.option] = btn.dataset.value;
+        });
+
+        const quantity = parseInt(document.getElementById('quantity').value);
+        const productId = @Model.ProductId;
+
+        // TODO: Implement add to cart functionality
+        console.log('Add to cart:', { productId, quantity, selectedOptions });
+
+        // Show success message (you can replace with your notification system)
+        alert('Đã thêm sản phẩm vào giỏ hàng!');
+    }
+
+    function buyNow() {
+        // Get selected options
+        const selectedOptions = {};
+        document.querySelectorAll('.option-btn.active').forEach(btn => {
+            selectedOptions[btn.dataset.option] = btn.dataset.value;
+        });
+
+        const quantity = parseInt(document.getElementById('quantity').value);
+        const productId = @Model.ProductId;
+
+        // TODO: Implement buy now functionality
+        console.log('Buy now:', { productId, quantity, selectedOptions });
+
+        // Redirect to checkout or show checkout modal
+        // window.location.href = `/checkout?productId=${productId}&quantity=${quantity}`;
+        alert('Chuyển đến trang thanh toán...');
+    }
+</script>

@@ -1,11 +1,61 @@
 ﻿@* Views/SellerShop/Index.cshtml - Dashboard Shop *@
 @model MKxStore247.Models.Shop
+<style>
+    .product-image-preview {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
 
+    .image-upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .image-upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+
+    .option-group {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #f8f9fa;
+    }
+
+    .option-value-item {
+        display: flex;
+        align-items-center;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 8px;
+        background-color: white;
+        border-radius: 5px;
+    }
+
+    .btn-remove-option {
+        background: none;
+        border: none;
+        color: #dc3545;
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .modal-xl {
+        max-width: 1200px;
+    }
+</style>
 @{
     ViewData["Title"] = "Dashboard Shop";
     var statistics = ViewBag.Statistics as MKxStore247.Services.Interface.ShopStatistics;
 }
-
 <div class="container-fluid">
     @if (TempData["SuccessMessage"] != null)
     {
@@ -30,7 +80,7 @@
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-md-2">
-                            @if (!string.IsNullOrEmpty(Model.Avatar))   
+                            @if (!string.IsNullOrEmpty(Model.Avatar))
                             {
                                 <img src="@Model.Avatar" class="rounded-circle img-fluid" style="width: 80px; height: 80px; object-fit: cover;" alt="Avatar">
                             }
@@ -227,40 +277,175 @@
 
     <!-- Quick Actions -->
     <div class="row">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-bolt me-2"></i>Thao tác nhanh
+	    <div class="col-12">
+		    <div class="card shadow-sm">
+			    <div class="card-header">
+				    <h5 class="card-title mb-0">
+					    <i class="fas fa-bolt me-2"></i>Thao tác nhanh
+				    </h5>
+			    </div>
+			    <div class="card-body">
+				    <div class="row">
+					    <div class="col-md-3">
+						    <button type="button" class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#createProductModal">
+							    <i class="fas fa-plus me-2"></i>Thêm sản phẩm
+						    </button>
+					    </div>
+					    <div class="col-md-3">
+						    <a href="/seller/orders" class="btn btn-info w-100 mb-2">
+							    <i class="fas fa-shopping-cart me-2"></i>Quản lý đơn hàng
+						    </a>
+					    </div>
+					    <div class="col-md-3">
+						    <a href="/seller/reports" class="btn btn-success w-100 mb-2">
+							    <i class="fas fa-chart-bar me-2"></i>Báo cáo
+						    </a>
+					    </div>
+					    <div class="col-md-3">
+						    <a href="/seller/promotions" class="btn btn-warning w-100 mb-2">
+							    <i class="fas fa-percent me-2"></i>Khuyến mãi
+						    </a>
+					    </div>
+				    </div>
+			    </div>
+		    </div>
+	    </div>
+    </div>
+    <!-- Model create -->
+    <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="createProductModalLabel">
+                        <i class="fas fa-plus-circle me-2"></i>Thêm sản phẩm mới
                     </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <a href="/seller/products/create" class="btn btn-primary w-100 mb-2">
-                                <i class="fas fa-plus me-2"></i>Thêm sản phẩm
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a href="/seller/orders" class="btn btn-info w-100 mb-2">
-                                <i class="fas fa-shopping-cart me-2"></i>Quản lý đơn hàng
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a href="/seller/reports" class="btn btn-success w-100 mb-2">
-                                <i class="fas fa-chart-bar me-2"></i>Báo cáo
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a href="/seller/promotions" class="btn btn-warning w-100 mb-2">
-                                <i class="fas fa-percent me-2"></i>Khuyến mãi
-                            </a>
+                <form id="createProductForm" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- Left Column - Basic Info -->
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Thông tin cơ bản</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="productName" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="productName" name="productName" required maxlength="100">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+												@{
+                                                    var categories = ViewBag.listCategory;
+												}
+	                                            <label for="categoryId" class="form-label">Danh mục <span class="text-danger">*</span></label>
+	                                            <select class="form-select" id="categoryId" name="categoryId" required>
+		                                            <option value="">Chọn danh mục</option>
+													@foreach (var category in categories)
+													{
+													<option value="@category.CategoryId">@category.CategoryName</option>
+													}
+	                                            </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="price" class="form-label">Giá bán <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="price" name="price" required min="0" step="1000">
+                                                    <span class="input-group-text">VNĐ</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 mb-3">
+                                                <label for="productDescription" class="form-label">Mô tả sản phẩm</label>
+                                                <textarea class="form-control" id="productDescription" name="description" rows="4" placeholder="Nhập mô tả chi tiết về sản phẩm..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Product Images -->
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-images me-2"></i>Hình ảnh sản phẩm</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="image-upload-area" onclick="document.getElementById('productImages').click()">
+                                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                            <p class="mb-0">Nhấp để chọn ảnh hoặc kéo thả ảnh vào đây</p>
+                                            <small class="text-muted">Hỗ trợ: JPG, PNG, GIF (tối đa 5MB mỗi ảnh)</small>
+                                        </div>
+                                        <input type="file" id="productImages" name="productImages" multiple accept="image/*" style="display: none;">
+                                        <div id="imagePreview" class="row mt-3"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Product Options -->
+                                <div class="card mt-3">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0"><i class="fas fa-cogs me-2"></i>Thuộc tính sản phẩm</h6>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addProductOption()">
+                                            <i class="fas fa-plus me-1"></i>Thêm thuộc tính
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="productOptions">
+                                            <p class="text-muted mb-0">Chưa có thuộc tính nào. Nhấn "Thêm thuộc tính" để thêm màu sắc, kích thước, v.v.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column - Summary -->
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-eye me-2"></i>Xem trước</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="productPreview">
+                                            <div class="text-center mb-3">
+                                                <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                                </div>
+                                            </div>
+                                            <h6 id="previewName" class="text-muted">Tên sản phẩm</h6>
+                                            <p id="previewPrice" class="h5 text-primary mb-2">0 VNĐ</p>
+                                            <p id="previewStock" class="text-muted mb-2">Kho: 0</p>
+                                            <p id="previewDescription" class="small text-muted">Mô tả sản phẩm sẽ hiển thị ở đây...</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Ghi chú</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled small mb-0">
+                                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Điền đầy đủ thông tin sản phẩm</li>
+                                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Thêm ít nhất 1 hình ảnh</li>
+                                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Chọn danh mục phù hợp</li>
+                                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Giá bán hợp lý</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Hủy
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus-circle me-2"></i>Tạo sản phẩm
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
 </div>
 
 @section Scripts {
@@ -298,6 +483,189 @@
                     }
                 }
             }
+        });
+        let optionCounter = 0;
+
+        // Real-time preview update
+        document.getElementById('productName').addEventListener('input', function() {
+            document.getElementById('previewName').textContent = this.value || 'Tên sản phẩm';
+        });
+
+        document.getElementById('price').addEventListener('input', function() {
+            const price = parseInt(this.value) || 0;
+            document.getElementById('previewPrice').textContent = price.toLocaleString('vi-VN') + ' VNĐ';
+        });
+
+        document.getElementById('stockQuantity').addEventListener('input', function() {
+            const stock = parseInt(this.value) || 0;
+            document.getElementById('previewStock').textContent = 'Kho: ' + stock;
+        });
+
+        document.getElementById('productDescription').addEventListener('input', function() {
+            document.getElementById('previewDescription').textContent = this.value;
+        });
+
+        // Image upload handling
+        document.getElementById('productImages').addEventListener('change', function() {
+            const files = this.files;
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3 mb-3';
+                    col.innerHTML = `
+                        <div class="position-relative">
+                            <img src="${e.target.result}" class="product-image-preview w-100" alt="Preview">
+                            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" onclick="removeImage(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="radio" name="mainImage" value="${i}" ${i === 0 ? 'checked' : ''}>
+                                <label class="form-check-label small">Ảnh chính</label>
+                            </div>
+                        </div>
+                    `;
+                    preview.appendChild(col);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function removeImage(button) {
+            button.closest('.col-md-3').remove();
+        }
+
+        // Product options management
+        function addProductOption() {
+            optionCounter++;
+            const optionsContainer = document.getElementById('productOptions');
+
+            if (optionsContainer.querySelector('p')) {
+                optionsContainer.innerHTML = '';
+            }
+
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option-group';
+            optionDiv.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label class="form-label mb-0">Tên thuộc tính (VD: Màu sắc, Kích thước)</label>
+                    <button type="button" class="btn-remove-option" onclick="removeOption(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <input type="text" class="form-control mb-3" name="options[${optionCounter}][name]" placeholder="Nhập tên thuộc tính...">
+                <label class="form-label">Giá trị thuộc tính:</label>
+                <div class="option-values" data-option="${optionCounter}">
+                    <div class="option-value-item">
+                        <input type="text" class="form-control" name="options[${optionCounter}][values][0][value]" placeholder="VD: Đỏ, Size M...">
+                        <input type="number" class="form-control" name="options[${optionCounter}][values][0][stock]" placeholder="Số lượng" min="0" style="width: 120px;">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOptionValue(this)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="addOptionValue(${optionCounter})">
+                    <i class="fas fa-plus me-1"></i>Thêm giá trị
+                </button>
+            `;
+
+            optionsContainer.appendChild(optionDiv);
+        }
+
+        function removeOption(button) {
+            button.closest('.option-group').remove();
+
+            const optionsContainer = document.getElementById('productOptions');
+            if (!optionsContainer.children.length) {
+                optionsContainer.innerHTML = '<p class="text-muted mb-0">Chưa có thuộc tính nào. Nhấn "Thêm thuộc tính" để thêm màu sắc, kích thước, v.v.</p>';
+            }
+        }
+
+        function addOptionValue(optionId) {
+            const valuesContainer = document.querySelector(`[data-option="${optionId}"]`);
+            const valueCount = valuesContainer.children.length;
+
+            const valueDiv = document.createElement('div');
+            valueDiv.className = 'option-value-item';
+            valueDiv.innerHTML = `
+                <input type="text" class="form-control" name="options[${optionId}][values][${valueCount}][value]" placeholder="VD: Đỏ, Size M...">
+                <input type="number" class="form-control" name="options[${optionId}][values][${valueCount}][stock]" placeholder="Số lượng" min="0" style="width: 120px;">
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOptionValue(this)">
+                    <i class="fas fa-minus"></i>
+                </button>
+            `;
+
+            valuesContainer.appendChild(valueDiv);
+        }
+
+        function removeOptionValue(button) {
+            button.closest('.option-value-item').remove();
+        }
+
+        // Form submission
+        document.getElementById('createProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Show loading
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tạo...';
+            submitBtn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+                alert('Sản phẩm đã được tạo thành công!');
+
+                // Reset form
+                this.reset();
+                document.getElementById('imagePreview').innerHTML = '';
+                document.getElementById('productOptions').innerHTML = '<p class="text-muted mb-0">Chưa có thuộc tính nào. Nhấn "Thêm thuộc tính" để thêm màu sắc, kích thước, v.v.</p>';
+
+                // Reset preview
+                document.getElementById('previewName').textContent = 'Tên sản phẩm';
+                document.getElementById('previewPrice').textContent = '0 VNĐ';
+                document.getElementById('previewStock').textContent = 'Kho: 0';
+                document.getElementById('previewDescription').textContent = 'Mô tả sản phẩm sẽ hiển thị ở đây...';
+
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('createProductModal')).hide();
+            }, 2000);
+        });
+
+
+        // Drag and drop for images
+        const uploadArea = document.querySelector('.image-upload-area');
+
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#0d6efd';
+            this.style.backgroundColor = '#f8f9fa';
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#dee2e6';
+            this.style.backgroundColor = 'transparent';
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#dee2e6';
+            this.style.backgroundColor = 'transparent';
+
+            const files = e.dataTransfer.files;
+            document.getElementById('productImages').files = files;
+            document.getElementById('productImages').dispatchEvent(new Event('change'));
         });
     </script>
 }

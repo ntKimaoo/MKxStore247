@@ -35,13 +35,79 @@ namespace MKxStore247.Services
 
         public async Task<Product> CreateAsync(Product product)
         {
-            product.CreatedAt = DateTime.UtcNow;
-            product.IsActive = false;
-            product.IsDeleted = false;
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Set default values
+                product.CreatedAt = DateTime.UtcNow;
+                product.IsActive = true;
+                product.IsDeleted = false;
+                product.UpdatedAt = null;
 
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-            return product;
+                // Add product first
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+
+                // Handle ProductImages if provided
+                if (product.Images != null && product.Images.Any())
+                {
+                    // Ensure only one main image
+                    var mainImageCount = product.Images.Count(img => img.IsMain);
+                    if (mainImageCount == 0)
+                    {
+                        // Set first image as main if no main image specified
+                        product.Images.First().IsMain = true;
+                    }
+                    else if (mainImageCount > 1)
+                    {
+                        // Set only first main image as true, others as false
+                        bool isFirstMain = true;
+                        foreach (var img in product.Images.Where(img => img.IsMain))
+                        {
+                            img.IsMain = isFirstMain;
+                            isFirstMain = false;
+                        }
+                    }
+
+                    foreach (var image in product.Images)
+                    {
+                        image.ProductId = product.ProductId;
+                        image.IsActive = true;
+                        _context.ProductImages.Add(image);
+                    }
+                }
+
+                // Handle ProductOptions if provided
+                if (product.ProductOptions != null && product.ProductOptions.Any())
+                {
+                    foreach (var option in product.ProductOptions)
+                    {
+                        option.ProductId = product.ProductId;
+                        _context.ProductOptions.Add(option);
+
+                        // Handle ProductOptionValues if provided
+                        if (option.Values != null && option.Values.Any())
+                        {
+                            foreach (var optionValue in option.Values)
+                            {
+                                optionValue.OptionId = option.OptionId;
+                                _context.ProductOptionValues.Add(optionValue);
+                            }
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                // Return product with all related data
+                return await GetProductFullDetailsAsync(product.ProductId);
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<Product> UpdateAsync(Product product)
@@ -123,6 +189,7 @@ namespace MKxStore247.Services
             return await _context.Products
                 .Include(p => p.Shop)
                 .Include(p => p.Category)
+                .Include(p=>p.Images)
                 .Where(p => (p.ProductName.Contains(searchTerm) ||
                            p.Description.Contains(searchTerm)) &&
                            p.IsActive && !p.IsDeleted)
@@ -143,13 +210,14 @@ namespace MKxStore247.Services
 
         #region Pagination
 
-        public async Task<(IEnumerable<Product> Products, int TotalCount)> GetPagedProductsAsync(
+        public async Task<(IEnumerable<Product> Products, int TotalCount)> GetPagedProductsAsync(string searchTerm,
             int pageNumber, int pageSize, string sortBy = "ProductName", bool ascending = true)
         {
             var query = _context.Products
                 .Include(p => p.Shop)
                 .Include(p => p.Category)
-                .Where(p => !p.IsDeleted);
+                .Include(p => p.Images)
+                .Where(p => !p.IsDeleted && p.ProductName.Contains(searchTerm));
 
             // Apply sorting
             query = ApplySorting(query, sortBy, ascending);
@@ -182,12 +250,17 @@ namespace MKxStore247.Services
         }
 
         public async Task<(IEnumerable<Product> Products, int TotalCount)> GetPagedProductsByCategoryAsync(
-            int categoryId, int pageNumber, int pageSize, string sortBy = "ProductName", bool ascending = true)
+            int categoryId, int pageNumber, int pageSize, string sortBy = "ProductName", bool ascending = true, string? searchProductName = null)
         {
             var query = _context.Products
                 .Include(p => p.Shop)
+                .Include(p=>p.Images)
                 .Where(p => p.CategoryId == categoryId && !p.IsDeleted);
-
+            // Add search functionality
+            if (!string.IsNullOrEmpty(searchProductName))
+            {
+                query = query.Where(p => p.ProductName.Contains(searchProductName));
+            }
             query = ApplySorting(query, sortBy, ascending);
 
             var totalCount = await query.CountAsync();
@@ -352,6 +425,18 @@ namespace MKxStore247.Services
                 .Include(p => p.ProductOptions)
                 .FirstOrDefaultAsync(p => p.ProductId == productId && !p.IsDeleted);
         }
+        public async Task<Product> GetProductFullDetailsAsync(int productId)
+        {
+            return await _context.Products
+                .Include(p => p.Shop)
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Include(p => p.ProductOptions)
+                .ThenInclude(v=>v.Values)
+                .Include(p => p.Ratings)
+                .Include(p => p.StockImports)
+                .FirstOrDefaultAsync(p => p.ProductId == productId && !p.IsDeleted && p.IsActive);
+        }
 
         #endregion
 
@@ -362,6 +447,7 @@ namespace MKxStore247.Services
             return await _context.Products
                 .Include(p => p.Shop)
                 .Include(p => p.Category)
+                .Include(p=>p.Images)
                 .Where(p => p.IsActive && !p.IsDeleted)
                 .OrderByDescending(p => p.CreatedAt)
                 .Take(count)
@@ -370,15 +456,170 @@ namespace MKxStore247.Services
 
         public async Task<IEnumerable<Product>> GetFeaturedProductsAsync()
         {
-            // Assuming featured products are best selling or highly rated
             return await _context.Products
                 .Include(p => p.Shop)
                 .Include(p => p.Category)
+                .Include(p=>p.Images)
                 .Where(p => p.IsActive && !p.IsDeleted)
                 .OrderByDescending(p => p.SoldQuantity)
-                .Take(20)
+                .Take(8)
                 .ToListAsync();
         }
+        #endregion
+
+        #region ImageProduct
+
+        #region Product Images Management
+
+        public async Task<ProductImage> AddProductImageAsync(int productId, ProductImage image)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null || product.IsDeleted)
+                return null;
+
+            image.ProductId = productId;
+            image.IsActive = true;
+
+            // If this is set as main image, remove main flag from others
+            if (image.IsMain)
+            {
+                var existingMainImages = await _context.ProductImages
+                    .Where(img => img.ProductId == productId && img.IsMain)
+                    .ToListAsync();
+
+                foreach (var existingMain in existingMainImages)
+                {
+                    existingMain.IsMain = false;
+                }
+            }
+
+            _context.ProductImages.Add(image);
+            await _context.SaveChangesAsync();
+            return image;
+        }
+
+        public async Task<bool> RemoveProductImageAsync(int imageId)
+        {
+            var image = await _context.ProductImages.FindAsync(imageId);
+            if (image == null)
+                return false;
+
+            _context.ProductImages.Remove(image);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<ProductImage> SetMainImageAsync(int productId, int imageId)
+        {
+            var image = await _context.ProductImages
+                .FirstOrDefaultAsync(img => img.ImageId == imageId && img.ProductId == productId);
+
+            if (image == null)
+                return null;
+
+            // Remove main flag from other images
+            var otherMainImages = await _context.ProductImages
+                .Where(img => img.ProductId == productId && img.IsMain && img.ImageId != imageId)
+                .ToListAsync();
+
+            foreach (var otherImage in otherMainImages)
+            {
+                otherImage.IsMain = false;
+            }
+
+            // Set this image as main
+            image.IsMain = true;
+            await _context.SaveChangesAsync();
+            return image;
+        }
+
+        public async Task<IEnumerable<ProductImage>> GetProductImagesAsync(int productId)
+        {
+            return await _context.ProductImages
+                .Where(img => img.ProductId == productId && img.IsActive)
+                .OrderByDescending(img => img.IsMain)
+                .ToListAsync();
+        }
+
+        #endregion
+
+        #region Option Product
+        public async Task<ProductOption> AddProductOptionAsync(int productId, ProductOption option)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null || product.IsDeleted)
+                return null;
+
+            option.ProductId = productId;
+            _context.ProductOptions.Add(option);
+            await _context.SaveChangesAsync();
+
+            // Add option values if provided
+            if (option.Values != null && option.Values.Any())
+            {
+                foreach (var optionValue in option.Values)
+                {
+                    optionValue.OptionId = option.OptionId;
+                    _context.ProductOptionValues.Add(optionValue);
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            return option;
+        }
+
+        public async Task<bool> RemoveProductOptionAsync(int optionId)
+        {
+            var option = await _context.ProductOptions
+                .Include(o => o.Values)
+                .FirstOrDefaultAsync(o => o.OptionId == optionId);
+
+            if (option == null)
+                return false;
+
+            // Remove all option values first
+            _context.ProductOptionValues.RemoveRange(option.Values);
+            _context.ProductOptions.Remove(option);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<ProductOptionValue> AddProductOptionValueAsync(int optionId, ProductOptionValue optionValue)
+        {
+            var option = await _context.ProductOptions.FindAsync(optionId);
+            if (option == null)
+                return null;
+
+            optionValue.OptionId = optionId;
+            _context.ProductOptionValues.Add(optionValue);
+            await _context.SaveChangesAsync();
+            return optionValue;
+        }
+
+        public async Task<bool> RemoveProductOptionValueAsync(int valueId)
+        {
+            var optionValue = await _context.ProductOptionValues.FindAsync(valueId);
+            if (optionValue == null)
+                return false;
+
+            _context.ProductOptionValues.Remove(optionValue);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<ProductOptionValue> UpdateOptionValueStockAsync(int valueId, int stockQuantity)
+        {
+            var optionValue = await _context.ProductOptionValues.FindAsync(valueId);
+            if (optionValue == null)
+                return null;
+
+            optionValue.StockQuantity = stockQuantity;
+            await _context.SaveChangesAsync();
+            return optionValue;
+        }
+
+        #endregion
+
         #endregion
 
         #region Bulk Operations

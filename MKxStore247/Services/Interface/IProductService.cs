@@ -20,14 +20,14 @@ namespace MKxStore247.Services.Interface
         Task<IEnumerable<Product>> GetProductsByPriceRangeAsync(decimal minPrice, decimal maxPrice);
 
         // Pagination
-        Task<(IEnumerable<Product> Products, int TotalCount)> GetPagedProductsAsync(
+        Task<(IEnumerable<Product> Products, int TotalCount)> GetPagedProductsAsync(string searchTerm,
             int pageNumber, int pageSize, string sortBy = "ProductName", bool ascending = true);
 
         Task<(IEnumerable<Product> Products, int TotalCount)> GetPagedProductsByShopAsync(
             int shopId, int pageNumber, int pageSize, string sortBy = "ProductName", bool ascending = true);
 
         Task<(IEnumerable<Product> Products, int TotalCount)> GetPagedProductsByCategoryAsync(
-            int categoryId, int pageNumber, int pageSize, string sortBy = "ProductName", bool ascending = true);
+            int categoryId, int pageNumber, int pageSize, string sortBy = "ProductName", bool ascending = true, string? searchProductName = null);
 
         // Stock Management
         Task<Product> UpdateStockQuantityAsync(int productId, int quantity);
@@ -49,11 +49,23 @@ namespace MKxStore247.Services.Interface
         // Related Data
         Task<Product> GetProductWithImagesAsync(int productId);
         Task<Product> GetProductWithOptionsAsync(int productId);
+        Task<Product> GetProductFullDetailsAsync(int productId);
 
         // Advanced Queries
         Task<IEnumerable<Product>> GetRecentProductsAsync(int count = 10);
         Task<IEnumerable<Product>> GetFeaturedProductsAsync();
+        // Product Images Management
+        Task<ProductImage> AddProductImageAsync(int productId, ProductImage image);
+        Task<bool> RemoveProductImageAsync(int imageId);
+        Task<ProductImage> SetMainImageAsync(int productId, int imageId);
+        Task<IEnumerable<ProductImage>> GetProductImagesAsync(int productId);
 
+        // Product Options Management
+        Task<ProductOption> AddProductOptionAsync(int productId, ProductOption option);
+        Task<bool> RemoveProductOptionAsync(int optionId);
+        Task<ProductOptionValue> AddProductOptionValueAsync(int optionId, ProductOptionValue optionValue);
+        Task<bool> RemoveProductOptionValueAsync(int valueId);
+        Task<ProductOptionValue> UpdateOptionValueStockAsync(int valueId, int stockQuantity);
         // Bulk Operations
         Task<bool> BulkUpdatePriceAsync(IEnumerable<int> productIds, decimal newPrice);
         Task<bool> BulkActivateAsync(IEnumerable<int> productIds);

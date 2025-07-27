@@ -86,7 +86,7 @@ else
 					@{
 						foreach (var item in listCates)
 						{
-							<a href="#" class="category-item">
+							<a href="/ListProduct/@item.CategoryId" class="category-item">
 								<div class="category-icon">
 									<i class="@item.ImageUrl"></i>
 								</div>
@@ -103,19 +103,26 @@ else
 			<div class="container">
 				<h2 class="section-title">Sản phẩm mới</h2>
 				<div class="row g-4">
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-card">
-							<img src="https://via.placeholder.com/300x200?text=iPhone+15" alt="iPhone 15"
-								 class="product-image">
-							<div class="product-info">
-								<div class="product-price">25.000.000 đ</div>
-								<div class="product-title">iPhone 15 Pro Max 256GB</div>
-								<div class="product-location">
-									<i class="fas fa-map-marker-alt me-1"></i>Hà Nội
+					@{
+						var recentProducts = ViewBag.recentProducts as List<Product>;
+						foreach (var itemProduct in recentProducts)
+						{
+							var mainImage = itemProduct.Images.FirstOrDefault(i => i.IsMain);
+							<a href="Product/@itemProduct.ProductId" class="col-lg-3 col-md-4 col-sm-6 text-decoration-none">
+								<div class="product-card">
+									<img src="@mainImage?.ImageUrl" alt="@itemProduct.ProductName"
+									     class="product-image">
+									<div class="product-info">
+										<div class="product-price">@itemProduct.Price.ToString("N0") đ</div>
+										<div class="product-title small">@itemProduct.ProductName</div>
+										<div class="product-location">
+											<i class="fas fa-map-marker-alt me-1"></i>@itemProduct.Shop.City
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-					</div>
+							</a>
+						}
+					}
 				</div>
 			</div>
 		</section>
@@ -124,19 +131,27 @@ else
 			<div class="container">
 				<h2 class="section-title">Sản phẩm nổi bật</h2>
 				<div class="row g-4">
-					<div class="col-lg-3 col-md-4 col-sm-6">
-						<div class="product-card">
-							<img src="https://via.placeholder.com/300x200?text=Căn+hộ" alt="Căn hộ"
-								 class="product-image">
-							<div class="product-info">
-								<div class="product-price">2.5 tỷ</div>
-								<div class="product-title">Căn hộ 2PN, full nội thất</div>
-								<div class="product-location">
-									<i class="fas fa-map-marker-alt me-1"></i>Hà Nội
+					@{
+						var featuredProducts = ViewBag.featuredProducts as List<Product>;
+
+						foreach (var itemProduct in featuredProducts)
+						{
+							var mainImage = itemProduct.Images.FirstOrDefault(i => i.IsMain);
+							<div class="col-lg-3 col-md-4 col-sm-6">
+								<div class="product-card">
+									<img src="@mainImage?.ImageUrl" alt="@itemProduct.ProductName"
+									     class="product-image">
+									<div class="product-info">
+										<div class="product-price">@itemProduct.Price.ToString("N0") đ</div>
+										<div class="product-title">@itemProduct.Description</div>
+										<div class="product-location">
+											<i class="fas fa-map-marker-alt me-1"></i>@itemProduct.Shop.City
+										</div>
+									</div>
 								</div>
 							</div>
-						</div>
-					</div>
+						}
+					}
 				</div>
 			</div>
 		</section>

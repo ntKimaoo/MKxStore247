@@ -1,0 +1,381 @@
+﻿@model (IEnumerable<Product> Products, int TotalCount, int PageNumber, int PageSize, int CategoryId, string SearchProductName)
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Danh sách sản phẩm</h2>
+
+            <!-- Search Form -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="get" action="/ListProduct/@Model.CategoryId">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="searchProductName">Tìm kiếm sản phẩm:</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="searchProductName"
+                                           name="searchProductName"
+                                           value="@Model.SearchProductName"
+                                           placeholder="Nhập tên sản phẩm...">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search"></i> Tìm kiếm
+                                        </button>
+                                        <a href="/ListProduct/@Model.CategoryId" class="btn btn-secondary">
+                                            <i class="fas fa-times"></i> Xóa bộ lọc
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="categoryId" value="@Model.CategoryId">
+                        <input type="hidden" name="pageNumber" value="1">
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results Info -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <span class="text-muted">
+                        Hiển thị @((Model.PageNumber - 1) * Model.PageSize + 1) - @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount))
+                        trong tổng số @Model.TotalCount sản phẩm
+                    </span>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-sort"></i> Sắp xếp
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="@Url.Action("ListProductFind", new { categoryId = Model.CategoryId, searchProductName = Model.SearchProductName, sortBy = "ProductName", ascending = true, pageNumber = 1 })">Tên A-Z</a></li>
+                        <li><a class="dropdown-item" href="@Url.Action("ListProductFind", new { categoryId = Model.CategoryId, searchProductName = Model.SearchProductName, sortBy = "ProductName", ascending = false, pageNumber = 1 })">Tên Z-A</a></li>
+                        <li><a class="dropdown-item" href="@Url.Action("ListProductFind", new { categoryId = Model.CategoryId, searchProductName = Model.SearchProductName, sortBy = "Price", ascending = true, pageNumber = 1 })">Giá thấp - cao</a></li>
+                        <li><a class="dropdown-item" href="@Url.Action("ListProductFind", new { categoryId = Model.CategoryId, searchProductName = Model.SearchProductName, sortBy = "Price", ascending = false, pageNumber = 1 })">Giá cao - thấp</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            @if (Model.Products != null && Model.Products.Any())
+            {
+                <div class="row">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card h-100 product-card">
+	                            <div class="product-image-container">
+                                    @{
+
+										var mainImage = product.Images.FirstOrDefault(i => i.IsMain);
+                                    }
+		                            @if (!string.IsNullOrEmpty(mainImage?.ImageUrl))
+		                            {
+			                            <img src="@mainImage?.ImageUrl" class="card-img-top product-image" alt="@product.ProductName">
+		                            }
+		                            else
+		                            {
+			                            <div class="no-image-placeholder">
+				                            <i class="fas fa-image fa-3x text-muted"></i>
+			                            </div>
+		                            }
+	                            </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title product-name">@product.ProductName</h6>
+                                    <p class="card-text text-muted small mb-2">
+                                        <i class="fas fa-store"></i> @product.Shop?.ShopName
+                                    </p>
+                                    <p class="card-text product-description">
+                                        @if (!string.IsNullOrEmpty(product.Description))
+                                        {
+                                            @(product.Description.Length > 100 ? product.Description.Substring(0, 100) + "..." : product.Description)
+                                        }
+                                    </p>
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="h5 text-primary mb-0">
+                                                @product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))
+                                            </span>
+                                            @if (product.StockQuantity> 0)
+                                            {
+                                                <span class="badge bg-success">Còn hàng</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Hết hàng</span>
+                                            }
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <a href="@Url.Action("ProductDetailsView", "Product", new { id = product.ProductId })"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-eye"></i> Xem chi tiết
+                                            </a>
+                                            @if (product.StockQuantity > 0)
+                                            {
+                                                <button class="btn btn-primary btn-sm"
+                                                        onclick="addToCart(@product.ProductId)">
+                                                    <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-secondary btn-sm" disabled>
+                                                    <i class="fas fa-ban"></i> Hết hàng
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                @if (totalPages > 1)
+                {
+                    <nav aria-label="Product pagination" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Page -->
+                            @if (Model.PageNumber > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="@Url.Action("ListProductFind", new { categoryId = Model.CategoryId, searchProductName = Model.SearchProductName, pageNumber = Model.PageNumber - 1 })">
+                                        <i class="fas fa-chevron-left"></i> Trước
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link"><i class="fas fa-chevron-left"></i> Trước</span>
+                                </li>
+                            }
+
+                            <!-- Page Numbers -->
+                            @{
+                                int startPage = Math.Max(1, Model.PageNumber - 2);
+                                int endPage = Math.Min(totalPages, Model.PageNumber + 2);
+                            }
+
+                            @if (startPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListProductFind", new { categoryId = Model.CategoryId, searchProductName = Model.SearchProductName, pageNumber = 1 })">1</a>
+                                </li>
+                                @if (startPage > 2)
+                                {
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                }
+                            }
+
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link"
+                                       href="@Url.Action("ListProductFind", new { categoryId = Model.CategoryId, searchProductName = Model.SearchProductName, pageNumber = i })">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            @if (endPage < totalPages)
+                            {
+                                @if (endPage < totalPages - 1)
+                                {
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                }
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ListProductFind", new { categoryId = Model.CategoryId, searchProductName = Model.SearchProductName, pageNumber = totalPages })">@totalPages</a>
+                                </li>
+                            }
+
+                            <!-- Next Page -->
+                            @if (Model.PageNumber < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="@Url.Action("ListProductFind", new { categoryId = Model.CategoryId, searchProductName = Model.SearchProductName, pageNumber = Model.PageNumber + 1 })">
+                                        Sau <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">Sau <i class="fas fa-chevron-right"></i></span>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Không tìm thấy sản phẩm nào</h4>
+                    <p class="text-muted">Hãy thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc</p>
+                    <a href="/ListProduct/@Model.CategoryId" class="btn btn-primary">
+                        <i class="fas fa-refresh"></i> Xem tất cả sản phẩm
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .product-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border: 1px solid #e0e0e0;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+    .product-image-container {
+        height: 200px;
+        overflow: hidden;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    .no-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+    }
+
+    .product-name {
+        font-weight: 600;
+        color: #2c3e50;
+        min-height: 48px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .product-description {
+        font-size: 0.875rem;
+        color: #6c757d;
+        flex-grow: 1;
+    }
+
+    .page-link {
+        color: #007bff;
+        border-color: #dee2e6;
+    }
+
+    .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-outline-primary:hover {
+        transform: translateY(-1px);
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #0056b3, #004085);
+            transform: translateY(-1px);
+        }
+</style>
+
+<script>
+    function addToCart(productId) {
+        // Implement add to cart functionality
+        fetch('/Cart/AddToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            body: JSON.stringify({ productId: productId, quantity: 1 })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                showToast('Đã thêm sản phẩm vào giỏ hàng!', 'success');
+                // Update cart count if you have one
+                updateCartCount();
+            } else {
+                showToast(data.message || 'Có lỗi xảy ra!', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Có lỗi xảy ra khi thêm vào giỏ hàng!', 'error');
+        });
+    }
+
+    function showToast(message, type) {
+        // Simple toast notification - you can use any toast library
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        toast.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 3000);
+    }
+
+    function updateCartCount() {
+        // Update cart count in navigation if you have one
+        fetch('/Cart/GetCartCount')
+            .then(response => response.json())
+            .then(data => {
+                const cartBadge = document.querySelector('.cart-count');
+                if (cartBadge) {
+                    cartBadge.textContent = data.count;
+                }
+            });
+    }
+</script>

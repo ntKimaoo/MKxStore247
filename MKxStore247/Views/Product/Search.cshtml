@@ -1,0 +1,569 @@
+﻿@model (IEnumerable<Product> Products, int TotalCount, int PageNumber, int PageSize, String searchTerm)
+
+@{
+    ViewData["Title"] = "Tìm kiếm sản phẩm";
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
+}
+
+<div class="container-fluid px-4 mt-4">
+    <div class="row">
+        <!-- Sidebar Filter (Optional) -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="fas fa-filter me-2"></i>Bộ lọc tìm kiếm</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Khoảng giá</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" class="form-control form-control-sm" placeholder="Từ">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control form-control-sm" placeholder="Đến">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tình trạng</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="inStock">
+                            <label class="form-check-label" for="inStock">Còn hàng</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="outStock">
+                            <label class="form-check-label" for="outStock">Hết hàng</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm w-100">Áp dụng bộ lọc</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Header Section -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h3 class="mb-2 text-primary">
+                                <i class="fas fa-search me-2"></i>Kết quả tìm kiếm
+                            </h3>
+                            @if (!string.IsNullOrEmpty(Model.searchTerm))
+                            {
+                                <p class="text-muted mb-0">
+                                    Từ khóa: <span class="fw-bold text-dark">"@Model.searchTerm"</span>
+                                </p>
+                            }
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="d-flex justify-content-md-end align-items-center gap-3">
+                                <span class="badge bg-info fs-6 px-3 py-2">
+                                    @Model.TotalCount sản phẩm
+                                </span>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-sort me-1"></i> Sắp xếp
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-sort-alpha-down me-2"></i>Tên A-Z</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-sort-alpha-up me-2"></i>Tên Z-A</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-sort-amount-down me-2"></i>Giá thấp - cao</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-sort-amount-up me-2"></i>Giá cao - thấp</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Info -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <small class="text-muted">
+                    Hiển thị <strong>@((Model.PageNumber - 1) * Model.PageSize + 1) - @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount))</strong>
+                    trong tổng số <strong>@Model.TotalCount</strong> sản phẩm
+                </small>
+                <div class="btn-group btn-group-sm" role="group">
+                    <input type="radio" class="btn-check" name="viewMode" id="gridView" checked>
+                    <label class="btn btn-outline-primary" for="gridView">
+                        <i class="fas fa-th-large"></i>
+                    </label>
+                    <input type="radio" class="btn-check" name="viewMode" id="listView">
+                    <label class="btn btn-outline-primary" for="listView">
+                        <i class="fas fa-list"></i>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            @if (Model.Products != null && Model.Products.Any())
+            {
+                <div class="row g-4" id="productsContainer">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 product-item">
+                            <div class="card h-100 product-card border-0 shadow-sm">
+                                <div class="position-relative product-image-container">
+                                    @{
+                                        var mainImage = product.Images.FirstOrDefault(i => i.IsMain);
+                                    }
+                                    @if (!string.IsNullOrEmpty(mainImage?.ImageUrl))
+                                    {
+                                        <img src="@mainImage?.ImageUrl" class="card-img-top product-image" alt="@product.ProductName">
+                                    }
+                                    else
+                                    {
+                                        <div class="no-image-placeholder">
+                                            <i class="fas fa-image fa-3x text-muted"></i>
+                                        </div>
+                                    }
+
+                                    <!-- Stock Badge -->
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        @if (product.StockQuantity > 0)
+                                        {
+                                            <span class="badge bg-success rounded-pill">
+                                                <i class="fas fa-check me-1"></i>Còn hàng
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger rounded-pill">
+                                                <i class="fas fa-times me-1"></i>Hết hàng
+                                            </span>
+                                        }
+                                    </div>
+
+                                    <!-- Quick Actions Overlay -->
+                                    <div class="product-overlay">
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-light btn-sm rounded-circle" title="Yêu thích">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                            <button class="btn btn-light btn-sm rounded-circle" title="So sánh">
+                                                <i class="fas fa-balance-scale"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body d-flex flex-column p-3">
+                                    <!-- Shop Info -->
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-store text-muted me-2"></i>
+                                        <small class="text-muted">@product.Shop?.ShopName</small>
+                                    </div>
+
+                                    <!-- Product Name -->
+                                    <h6 class="card-title product-name mb-2">@product.ProductName</h6>
+
+                                    <!-- Description -->
+                                    <p class="card-text product-description text-muted small mb-3">
+                                        @if (!string.IsNullOrEmpty(product.Description))
+                                        {
+                                            @(product.Description.Length > 80 ? product.Description.Substring(0, 80) + "..." : product.Description)
+                                        }
+                                    </p>
+
+                                    <!-- Price and Actions -->
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div class="price-section">
+                                                <span class="h5 text-primary fw-bold mb-0">
+                                                    @product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Buttons -->
+                                        <div class="d-flex gap-2">
+                                            <a href="@Url.Action("ProductDetailsView", "Product", new { id = product.ProductId })"
+                                               class="btn btn-outline-primary btn-sm flex-grow-1">
+                                                <i class="fas fa-eye me-1"></i> Chi tiết
+                                            </a>
+                                            @if (product.StockQuantity > 0)
+                                            {
+                                                <button class="btn btn-primary btn-sm flex-grow-1"
+                                                        onclick="addToCart(@product.ProductId)">
+                                                    <i class="fas fa-shopping-cart me-1"></i> Thêm vào giỏ
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-secondary btn-sm flex-grow-1" disabled>
+                                                    <i class="fas fa-ban me-1"></i> Hết hàng
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Enhanced Pagination -->
+                @if (totalPages > 1)
+                {
+                    <div class="d-flex justify-content-center mt-5">
+                        <nav aria-label="Product pagination">
+                            <ul class="pagination pagination-lg shadow-sm">
+                                <!-- Previous Page -->
+                                @if (Model.PageNumber > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link rounded-start" href="@Url.Action("Search", new { searchTerm=Model.searchTerm , pageNumber = Model.PageNumber - 1 })">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link rounded-start">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </span>
+                                    </li>
+                                }
+
+                                <!-- Page Numbers -->
+                                @{
+                                    int startPage = Math.Max(1, Model.PageNumber - 2);
+                                    int endPage = Math.Min(totalPages, Model.PageNumber + 2);
+                                }
+
+                                @if (startPage > 1)
+                                {
+                                    <li class="page-item">
+	                                    <a class="page-link rounded-start" href="@Url.Action("Search", new { searchTerm=Model.searchTerm , pageNumber = 1 })">1</a>
+                                    </li>
+                                    @if (startPage > 2)
+                                    {
+                                        <li class="page-item disabled">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    }
+                                }
+
+                                @for (int i = startPage; i <= endPage; i++)
+                                {
+                                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+	                                    <a class="page-link rounded-start" href="@Url.Action("Search", new { searchTerm=Model.searchTerm , pageNumber = i })">@i</a>
+                                    </li>
+                                }
+
+                                @if (endPage < totalPages)
+                                {
+                                    @if (endPage < totalPages - 1)
+                                    {
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    }
+                                    <li class="page-item">
+	                                    <a class="page-link rounded-start" href="@Url.Action("Search", new { searchTerm=Model.searchTerm , pageNumber = Model.PageNumber+1 })">@totalPages</a>
+                                    </li>
+                                }
+
+                                <!-- Next Page -->
+                                @if (Model.PageNumber < totalPages)
+                                {
+                                    <li class="page-item">
+	                                    <a class="page-link"
+                                           href="@Url.Action("ListProductFind", new { searchTerm=Model.searchTerm , pageNumber = Model.PageNumber+1 })">
+		                                    Sau <i class="fas fa-chevron-right"></i>
+	                                    </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link rounded-end">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                }
+            }
+            else
+            {
+                <!-- Enhanced Empty State -->
+                <div class="text-center py-5">
+                    <div class="empty-state">
+                        <div class="empty-icon mb-4">
+                            <i class="fas fa-search fa-4x text-muted"></i>
+                        </div>
+                        <h4 class="text-muted mb-3">Không tìm thấy sản phẩm nào</h4>
+                        <p class="text-muted mb-4">
+                            Chúng tôi không thể tìm thấy sản phẩm nào phù hợp với từ khóa của bạn.<br>
+                            Hãy thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc.
+                        </p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-refresh me-2"></i>Xem tất cả sản phẩm
+                            </button>
+                            <button class="btn btn-outline-secondary">
+                                <i class="fas fa-filter me-2"></i>Xóa bộ lọc
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .product-card {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        }
+
+    .product-image-container {
+        height: 220px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        position: relative;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.1);
+    }
+
+    .product-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .product-card:hover .product-overlay {
+        opacity: 1;
+    }
+
+    .no-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .product-name {
+        font-weight: 600;
+        color: #2c3e50;
+        line-height: 1.4;
+        min-height: 45px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .product-description {
+        line-height: 1.5;
+        min-height: 60px;
+    }
+
+    .price-section .h5 {
+        font-size: 1.25rem;
+    }
+
+    .pagination-lg .page-link {
+        padding: 0.75rem 1rem;
+        margin: 0 2px;
+        border-radius: 8px !important;
+        border: 2px solid #e9ecef;
+        color: #495057;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .pagination-lg .page-item.active .page-link {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        border-color: #007bff;
+        box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        transform: translateY(-2px);
+    }
+
+    .pagination-lg .page-link:hover:not(.disabled) {
+        background-color: #f8f9fa;
+        border-color: #007bff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,123,255,0.3);
+        }
+
+    .btn-outline-primary {
+        border: 2px solid #007bff;
+        color: #007bff;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,123,255,0.3);
+        }
+
+    .empty-state {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+    }
+
+    .empty-icon {
+        position: relative;
+    }
+
+        .empty-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0,123,255,0.1) 0%, rgba(0,86,179,0.1) 100%);
+            z-index: -1;
+        }
+
+    .card-header {
+        border-radius: 12px 12px 0 0 !important;
+
+    }
+
+    /* List View Styles */
+    .list-view .product-item {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .list-view .product-card {
+        flex-direction: row;
+    }
+
+    .list-view .product-image-container {
+        width: 200px;
+        height: 150px;
+        flex-shrink: 0;
+    }
+
+    .list-view .card-body {
+        flex: 1;
+    }
+</style>
+
+<script>
+    // View mode toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const gridViewBtn = document.getElementById('gridView');
+        const listViewBtn = document.getElementById('listView');
+        const productsContainer = document.getElementById('productsContainer');
+
+        listViewBtn.addEventListener('change', function() {
+            if (this.checked) {
+                productsContainer.classList.add('list-view');
+            }
+        });
+
+        gridViewBtn.addEventListener('change', function() {
+            if (this.checked) {
+                productsContainer.classList.remove('list-view');
+            }
+        });
+    });
+
+    function addToCart(productId) {
+        // Implement add to cart functionality
+        fetch('/Cart/AddToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            body: JSON.stringify({ productId: productId, quantity: 1 })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Đã thêm sản phẩm vào giỏ hàng!', 'success');
+                updateCartCount();
+            } else {
+                showToast(data.message || 'Có lỗi xảy ra!', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Có lỗi xảy ra khi thêm vào giỏ hàng!', 'error');
+        });
+    }
+
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 350px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);';
+        toast.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-3 fs-5"></i>
+                <span class="flex-grow-1">${message}</span>
+                <button type="button" class="btn-close ms-3" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 3000);
+    }
+
+    function updateCartCount() {
+        fetch('/Cart/GetCartCount')
+            .then(response => response.json())
+            .then(data => {
+                const cartBadge = document.querySelector('.cart-count');
+                if (cartBadge) {
+                    cartBadge.textContent = data.count;
+                }
+            });
+    }
+</script>

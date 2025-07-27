@@ -107,10 +107,13 @@ public class MKxStore247Context : IdentityDbContext<UserApplication>
     public DbSet<Shop> Shop { get; set; }
     public DbSet<CategoryProduct> CategoryProduct { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<ProductOption> ProductOptions { get; set; }
+    public DbSet<ProductOptionValue> ProductOptionValues { get; set; }
     public DbSet<StockImport> StockImport { get; set; }
-    public DbSet<CartItem> CartItem { get; set; }
-    public DbSet<OrderDetail> OrderDetail { get; set; }
-    public DbSet<Order> Order { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
+    public DbSet<OrderDetail> OrderDetails { get; set; }
+    public DbSet<Order> Orders { get; set; }
     public DbSet<PaymentMethod> PaymentMethod { get; set; }
     public DbSet<UserCoupon> UserCoupon { get; set; }
     public DbSet<Coupon> Coupon { get; set; }

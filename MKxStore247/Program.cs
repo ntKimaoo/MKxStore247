@@ -36,6 +36,10 @@ namespace MKxStore247
             builder.Services.AddScoped<IUserApplicationService, UserApplicationService>();
             builder.Services.AddScoped<ICategoryProductService, CategoryProductService>();
             builder.Services.AddScoped<IShopService, ShopService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())

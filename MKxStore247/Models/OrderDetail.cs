@@ -25,5 +25,6 @@ namespace MKxStore247.Models
 
         [ForeignKey("ProductId")]
         public virtual Product Product { get; set; }
+        public virtual ICollection<OrderDetailOption> SelectedOptions { get; set; } = new List<OrderDetailOption>();
     }
 }

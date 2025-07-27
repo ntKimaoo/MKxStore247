@@ -7,6 +7,6 @@
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string CreatedBy { get; set; }
         public virtual UserApplication User { get; set; }
-        public virtual ICollection<CartItem> Items { get; set; }
+        public virtual ICollection<CartItem> Items { get; set; } = new List<CartItem>();
     }
 }

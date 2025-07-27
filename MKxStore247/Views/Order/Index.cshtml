@@ -1,0 +1,611 @@
+﻿@model MKxStore247.Models.Cart
+@{
+	ViewBag.Title = "Thanh toán";
+	decimal totalAmount = Model?.Items?.Sum(i => i.Product.Price * i.Quantity) ?? 0;
+	int totalItems = Model?.Items?.Sum(i => i.Quantity) ?? 0;
+	var user = ViewBag.User as MKxStore247.Models.UserApplication;
+	var addresses = ViewBag.Addresses as List<MKxStore247.Models.Address>;
+	var paymentMethods = ViewBag.PaymentMethods as List<MKxStore247.Models.PaymentMethod>;
+}
+
+<div class="container mt-4">
+	<div class="row">
+		<div class="col-12">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+					<li class="breadcrumb-item"><a href="@Url.Action("ViewCart", "Cart")">Giỏ hàng</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Thanh toán</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-12">
+			<h2 class="mb-4">
+				<i class="fas fa-credit-card me-2"></i>
+				Thanh toán đơn hàng
+			</h2>
+		</div>
+	</div>
+
+	@if (Model == null || !Model.Items.Any())
+	{
+		<!-- Empty Cart -->
+		<div class="row">
+			<div class="col-12">
+				<div class="text-center py-5">
+					<div class="mb-4">
+						<i class="fas fa-shopping-cart fa-5x text-muted"></i>
+					</div>
+					<h4 class="text-muted mb-3">Giỏ hàng của bạn đang trống</h4>
+					<p class="text-muted mb-4">Hãy thêm một số sản phẩm vào giỏ hàng để tiếp tục mua sắm!</p>
+					<a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg">
+						<i class="fas fa-arrow-left me-2"></i>
+						Tiếp tục mua sắm
+					</a>
+				</div>
+			</div>
+		</div>
+	}
+	else
+	{
+		<form asp-action="PlaceOrder" method="post" id="checkoutForm">
+			@Html.AntiForgeryToken()
+
+			<div class="row">
+				<!-- Left Column - Order Details -->
+				<div class="col-lg-8">
+					<!-- Shipping Address -->
+					<div class="card mb-4">
+						<div class="card-header bg-primary text-white">
+							<h5 class="mb-0">
+								<i class="fas fa-map-marker-alt me-2"></i>
+								Địa chỉ giao hàng
+							</h5>
+						</div>
+						<div class="card-body">
+							@if (addresses != null && addresses.Any())
+							{
+								@foreach (var address in addresses)
+								{
+									<div class="form-check mb-3">
+										<input class="form-check-input address-radio"
+											   type="radio"
+											   name="addressId"
+											   value="@address.AddressId"
+											   id="address_@address.AddressId"
+										@(address.IsDefault ? "checked" : "")
+											   data-shipping-fee="@(address.City == "Hà Nội" ? 0 : 30000)">
+										<label class="form-check-label w-100" for="address_@address.AddressId">
+											<div class="d-flex justify-content-between align-items-start">
+												<div>
+													<strong>@address.Country</strong>
+													@if (address.IsDefault)
+													{
+														<span class="badge bg-success ms-2">Mặc định</span>
+													}
+													<br>
+
+												</div>
+											</div>
+										</label>
+									</div>
+								}
+							}
+							else
+							{
+								<div class="alert alert-warning">
+									<i class="fas fa-exclamation-triangle me-2"></i>
+									Bạn chưa có địa chỉ giao hàng nào.
+									<a href="#" class="alert-link" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+										Thêm địa chỉ mới
+									</a>
+								</div>
+							}
+						</div>
+					</div>
+
+					<!-- Payment Method -->
+					<div class="card mb-4">
+						<div class="card-header bg-success text-white">
+							<h5 class="mb-0">
+								<i class="fas fa-credit-card me-2"></i>
+								Phương thức thanh toán
+							</h5>
+						</div>
+						<div class="card-body">
+							@if (paymentMethods != null && paymentMethods.Any())
+							{
+								@foreach (var method in paymentMethods)
+								{
+									<div class="form-check mb-3">
+										<input class="form-check-input"
+											   type="radio"
+											   name="paymentMethodId"
+											   value="@method.PaymentMethodId"
+											   id="payment_@method.PaymentMethodId"
+										@(method.PaymentMethodId == 1 ? "checked" : "")>
+										<label class="form-check-label" for="payment_@method.PaymentMethodId">
+											<i class="@(method.Name.Contains("Tiền mặt") ? "fas fa-money-bill" :
+                                                   method.Name.Contains("Chuyển khoản") ? "fas fa-university" :
+                                                   "fas fa-credit-card") me-2"></i>
+											@method.Name
+											@if (!string.IsNullOrEmpty(method.Description))
+											{
+												<small class="text-muted d-block">@method.Description</small>
+											}
+										</label>
+									</div>
+								}
+							}
+						</div>
+					</div>
+
+					<!-- Order Note -->
+					<div class="card mb-4">
+						<div class="card-header bg-info text-white">
+							<h5 class="mb-0">
+								<i class="fas fa-sticky-note me-2"></i>
+								Ghi chú đơn hàng
+							</h5>
+						</div>
+						<div class="card-body">
+							<textarea class="form-control"
+									  name="note"
+									  rows="3"
+									  placeholder="Ghi chú cho người bán (tùy chọn)..."></textarea>
+						</div>
+					</div>
+
+					<!-- Order Items Review -->
+					<div class="card">
+						<div class="card-header bg-warning text-dark">
+							<h5 class="mb-0">
+								<i class="fas fa-list me-2"></i>
+								Xem lại đơn hàng (@totalItems sản phẩm)
+							</h5>
+						</div>
+						<div class="card-body p-0">
+							<div class="table-responsive">
+								<table class="table table-sm mb-0">
+									<tbody>
+										@foreach (var item in Model.Items)
+										{
+											var mainImage = item.Product.Images?.FirstOrDefault(i => i.IsMain);
+											var itemTotal = item.Product.Price * item.Quantity;
+											<tr>
+												<td style="width: 60px;">
+													@if (mainImage != null)
+													{
+														<img src="@mainImage.ImageUrl"
+															 alt="@item.Product.ProductName"
+															 class="img-thumbnail"
+															 style="width: 50px; height: 50px; object-fit: cover;">
+													}
+													else
+													{
+														<div class="d-flex align-items-center justify-content-center bg-light rounded"
+															 style="width: 50px; height: 50px;">
+															<i class="fas fa-image text-muted"></i>
+														</div>
+													}
+												</td>
+												<td>
+													<h6 class="mb-1">@item.Product.ProductName</h6>
+													<small class="text-muted">Shop: @item.Product.Shop.ShopName</small>
+												</td>
+												<td class="text-center">
+													<span class="badge bg-secondary">x @item.Quantity</span>
+												</td>
+												<td class="text-end">
+													<span class="fw-bold text-primary">
+														@itemTotal.ToString("N0") ₫
+													</span>
+												</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Right Column - Order Summary -->
+				<div class="col-lg-4">
+					<div class="card sticky-top" style="top: 20px;">
+						<div class="card-header bg-danger text-white">
+							<h5 class="mb-0">
+								<i class="fas fa-calculator me-2"></i>
+								Tóm tắt thanh toán
+							</h5>
+						</div>
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-center mb-3">
+								<span>Tạm tính (@totalItems sản phẩm):</span>
+								<span class="fw-bold" id="subtotal">@totalAmount.ToString("N0") ₫</span>
+							</div>
+
+							<div class="d-flex justify-content-between align-items-center mb-3">
+								<span>Phí vận chuyển:</span>
+								<span class="fw-bold" id="shipping-fee">0 ₫</span>
+							</div>
+
+							<!-- Discount Code -->
+							<div class="mb-3">
+								<label for="discountCode" class="form-label">Mã giảm giá:</label>
+								<div class="input-group">
+									<input type="text" class="form-control" id="discountCode" placeholder="Nhập mã giảm giá">
+									<button class="btn btn-outline-secondary" type="button" id="applyDiscount">
+										Áp dụng
+									</button>
+								</div>
+								<div id="discount-result" class="mt-2"></div>
+							</div>
+
+							<hr>
+
+							<div class="d-flex justify-content-between align-items-center mb-4">
+								<span class="h5 mb-0">Tổng cộng:</span>
+								<span class="h5 mb-0 text-danger fw-bold" id="total-amount">@totalAmount.ToString("N0") ₫</span>
+							</div>
+
+							<!-- Place Order Button -->
+							<div class="d-grid gap-2">
+								<button type="submit" class="btn btn-danger btn-lg" id="placeOrderBtn">
+									<i class="fas fa-shopping-cart me-2"></i>
+									Đặt hàng
+								</button>
+								<a href="@Url.Action("ViewCart", "Cart")" class="btn btn-outline-secondary">
+									<i class="fas fa-arrow-left me-2"></i>
+									Quay lại giỏ hàng
+								</a>
+							</div>
+
+							<!-- Security Info -->
+							<div class="mt-3 text-center">
+								<small class="text-muted">
+									<i class="fas fa-shield-alt me-1"></i>
+									Thông tin của bạn được bảo mật tuyệt đối
+								</small>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	}
+</div>
+
+<!-- Add Address Modal -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addAddressModalLabel">
+					<i class="fas fa-plus me-2"></i>
+					Thêm địa chỉ mới
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="addAddressForm">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="recipientName" class="form-label">Tên người nhận *</label>
+								<input type="text" class="form-control" id="recipientName" required>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="mb-3">
+								<label for="phone" class="form-label">Số điện thoại *</label>
+								<input type="tel" class="form-control" id="phone" required>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							<div class="mb-3">
+								<label for="province" class="form-label">Tỉnh/Thành phố *</label>
+								<select class="form-select" id="province" required>
+									<option value="">Chọn tỉnh/thành</option>
+									<option value="Hà Nội">Hà Nội</option>
+									<option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+									<option value="Đà Nẵng">Đà Nẵng</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="mb-3">
+								<label for="district" class="form-label">Quận/Huyện *</label>
+								<select class="form-select" id="district" required>
+									<option value="">Chọn quận/huyện</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="mb-3">
+								<label for="ward" class="form-label">Phường/Xã *</label>
+								<select class="form-select" id="ward" required>
+									<option value="">Chọn phường/xã</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label for="fullAddress" class="form-label">Địa chỉ cụ thể *</label>
+						<textarea class="form-control" id="fullAddress" rows="2" required
+								  placeholder="Số nhà, tên đường..."></textarea>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="isDefault">
+						<label class="form-check-label" for="isDefault">
+							Đặt làm địa chỉ mặc định
+						</label>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+				<button type="button" class="btn btn-primary" id="saveAddressBtn">
+					<i class="fas fa-save me-2"></i>
+					Lưu địa chỉ
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	<div id="checkoutToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header">
+			<i class="fas fa-info-circle me-2 text-primary"></i>
+			<strong class="me-auto">Thông báo</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body" id="toastMessage">
+			<!-- Toast message will be inserted here -->
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		$(document).ready(function() {
+			// Initialize
+			updateShippingFee();
+
+			// Address change handler
+			$('.address-radio').on('change', function() {
+				updateShippingFee();
+			});
+
+			// Form validation
+			$('#checkoutForm').on('submit', function(e) {
+				if (!validateForm()) {
+					e.preventDefault();
+					return false;
+				}
+
+				// Disable submit button to prevent double submission
+				$('#placeOrderBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+			});
+
+			// Apply discount
+			$('#applyDiscount').on('click', function() {
+				const discountCode = $('#discountCode').val().trim();
+				if (discountCode) {
+					applyDiscount(discountCode);
+				} else {
+					showToast('Vui lòng nhập mã giảm giá!', 'warning');
+				}
+			});
+
+			// Save new address
+			$('#saveAddressBtn').on('click', function() {
+				saveNewAddress();
+			});
+		});
+
+		function updateShippingFee() {
+			const selectedAddress = $('.address-radio:checked');
+			if (selectedAddress.length > 0) {
+				const shippingFee = parseInt(selectedAddress.data('shipping-fee')) || 0;
+				const subtotal = @totalAmount;
+				const total = subtotal + shippingFee;
+
+				$('#shipping-fee').text(formatCurrency(shippingFee));
+				$('#total-amount').text(formatCurrency(total));
+			}
+		}
+
+		function validateForm() {
+			// Check address
+			if (!$('.address-radio:checked').length) {
+				showToast('Vui lòng chọn địa chỉ giao hàng!', 'error');
+				return false;
+			}
+
+			// Check payment method
+			if (!$('input[name="paymentMethodId"]:checked').length) {
+				showToast('Vui lòng chọn phương thức thanh toán!', 'error');
+				return false;
+			}
+
+			return true;
+		}
+
+		function applyDiscount(code) {
+			$.ajax({
+				url: '/Order/ApplyCoupon',
+				type: 'POST',
+				data: { couponId: code },
+				headers: {
+					'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+				},
+				success: function(response) {
+					if (response.success) {
+						const discountAmount = response.discountAmount;
+						const finalAmount = response.finalAmount;
+
+						$('#discount-result').html(`
+							<div class="alert alert-success alert-sm p-2">
+								<i class="fas fa-check me-1"></i>
+								Giảm ${formatCurrency(discountAmount)}
+							</div>
+						`);
+
+						$('#total-amount').text(formatCurrency(finalAmount));
+						showToast(response.message, 'success');
+					} else {
+						$('#discount-result').html(`
+							<div class="alert alert-danger alert-sm p-2">
+								<i class="fas fa-times me-1"></i>
+								${response.message}
+							</div>
+						`);
+						showToast(response.message, 'error');
+					}
+				},
+				error: function() {
+					showToast('Có lỗi xảy ra khi áp dụng mã giảm giá!', 'error');
+				}
+			});
+		}
+
+		function saveNewAddress() {
+			const formData = {
+				recipientName: $('#recipientName').val(),
+				phone: $('#phone').val(),
+				province: $('#province').val(),
+				district: $('#district').val(),
+				ward: $('#ward').val(),
+				fullAddress: $('#fullAddress').val(),
+				isDefault: $('#isDefault').is(':checked')
+			};
+
+			// Basic validation
+			if (!formData.recipientName || !formData.phone || !formData.province ||
+				!formData.district || !formData.ward || !formData.fullAddress) {
+				showToast('Vui lòng nhập đầy đủ thông tin!', 'error');
+				return;
+			}
+
+			$.ajax({
+				url: '/Address/Add',
+				type: 'POST',
+				data: formData,
+				headers: {
+					'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+				},
+				success: function(response) {
+					if (response.success) {
+						showToast('Thêm địa chỉ thành công!', 'success');
+						$('#addAddressModal').modal('hide');
+						location.reload(); // Reload to show new address
+					} else {
+						showToast(response.message || 'Có lỗi xảy ra!', 'error');
+					}
+				},
+				error: function() {
+					showToast('Có lỗi xảy ra khi lưu địa chỉ!', 'error');
+				}
+			});
+		}
+
+		function formatCurrency(amount) {
+			return new Intl.NumberFormat('vi-VN').format(amount) + ' ₫';
+		}
+
+		function showToast(message, type) {
+			const toastElement = document.getElementById('checkoutToast');
+			const messageElement = document.getElementById('toastMessage');
+
+			messageElement.textContent = message;
+
+			// Add appropriate class based on type
+			toastElement.className = 'toast';
+			if (type === 'success') {
+				toastElement.classList.add('bg-success', 'text-white');
+			} else if (type === 'error') {
+				toastElement.classList.add('bg-danger', 'text-white');
+			} else if (type === 'warning') {
+				toastElement.classList.add('bg-warning', 'text-dark');
+			} else {
+				toastElement.classList.add('bg-info', 'text-white');
+			}
+
+			const toast = new bootstrap.Toast(toastElement);
+			toast.show();
+		}
+	</script>
+}
+
+<style>
+	.sticky-top {
+		z-index: 1020;
+	}
+
+	.card {
+		box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+		border: none;
+		border-radius: 10px;
+		margin-bottom: 1rem;
+	}
+
+	.card-header {
+		border-radius: 10px 10px 0 0 !important;
+		font-weight: 600;
+	}
+
+	.form-check-input:checked {
+		background-color: #0d6efd;
+		border-color: #0d6efd;
+	}
+
+	.form-check-label {
+		cursor: pointer;
+	}
+
+	.btn {
+		border-radius: 6px;
+	}
+
+	.img-thumbnail {
+		border-radius: 8px;
+	}
+
+	.alert-sm {
+		font-size: 0.875rem;
+	}
+
+	.toast {
+		border-radius: 8px;
+	}
+
+	.table td {
+		vertical-align: middle;
+		padding: 0.75rem 0.5rem;
+	}
+
+	#placeOrderBtn:disabled {
+		opacity: 0.7;
+		cursor: not-allowed;
+	}
+
+	.modal-content {
+		border-radius: 10px;
+	}
+
+	.input-group .btn {
+		border-radius: 0 6px 6px 0;
+	}
+
+	.input-group .form-control {
+		border-radius: 6px 0 0 6px;
+	}
+</style>

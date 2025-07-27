@@ -13,13 +13,16 @@ namespace MKxStore247.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IShopService _shopService;
         private readonly ICategoryProductService _categoryProductService;
-        public HomeController(ILogger<HomeController> logger, UserManager<UserApplication> userManager, RoleManager<IdentityRole> roleManager, IShopService shopService, ICategoryProductService categoryProductService)
+        private readonly IProductService _productService;
+        public HomeController(ILogger<HomeController> logger, UserManager<UserApplication> userManager, RoleManager<IdentityRole> roleManager, 
+            IShopService shopService, ICategoryProductService categoryProductService, IProductService productService)
         {
             _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
             _shopService = shopService;
             _categoryProductService = categoryProductService;
+            _productService = productService;
         }
 
         public async Task<IActionResult> Index()
@@ -40,7 +43,11 @@ namespace MKxStore247.Controllers
                 }
             }
             var categories = await _categoryProductService.GetAllCategoryAsync();
+            var recentProduct = await _productService.GetRecentProductsAsync(8);
+            var featuredProducts = await _productService.GetFeaturedProductsAsync();
             ViewBag.listCates = categories;
+            ViewBag.recentProducts = recentProduct;
+            ViewBag.featuredProducts = featuredProducts;
             return View();
         }
 
